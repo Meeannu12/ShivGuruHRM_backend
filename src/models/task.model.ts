@@ -1,0 +1,28 @@
+import { Schema, model, Document } from "mongoose";
+
+interface ITask extends Document {
+  title: string;
+  description?: string;
+  assignedTo: Schema.Types.ObjectId; // User (Employee)
+  createdBy: Schema.Types.ObjectId;  // Manager/Admin
+  priority: "low" | "medium" | "high";
+  status: "pending" | "in-progress" | "completed";
+  deadline?: Date;
+  completedAt?: Date;
+}
+
+const TaskSchema = new Schema<ITask>(
+  {
+    title: { type: String, required: true },
+    description: { type: String },
+    assignedTo: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    priority: { type: String, enum: ["low", "medium", "high"], default: "medium" },
+    status: { type: String, enum: ["pending", "in-progress", "completed"], default: "pending" },
+    deadline: { type: Date },
+    completedAt: { type: Date },
+  },
+  { timestamps: true }
+);
+
+export default model<ITask>("Task", TaskSchema);
