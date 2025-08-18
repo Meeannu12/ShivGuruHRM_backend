@@ -6,14 +6,14 @@ import { AuthRequest } from "../middleware/auth";
 export const createTask = async (req: AuthRequest, res: Response) => {
   try {
     const { title, description, assignedTo, priority, deadline } = req.body;
-
+    console.log(req.user);
     const task = await TaskModel.create({
       title,
       description,
       assignedTo,
       priority,
       deadline,
-      createdBy: req.user._id, // logged-in manager
+      createdBy: req.user.userId, // logged-in manager
     });
 
     res.status(201).json({ success: true, task });
@@ -22,15 +22,41 @@ export const createTask = async (req: AuthRequest, res: Response) => {
   }
 };
 
+// GET /tasks/assigned-by-me
+export const getAssignedTasks = async (req: AuthRequest, res: Response) => {
+  try {
+    const userRole = req.user.role;
+
+    if (!["ceo", "cfo", "manager"].includes(userRole)) {
+      return res.status(400).json({
+        success: false,
+        message: "Access denied You are not Authorize",
+      });
+    }
+
+    const tasks = await TaskModel.find()
+      .populate("createdBy", "name role email")
+      .populate("assignedTo", "name role email")
+      .sort({ deadline: -1 });
+
+    res.json({ success: true, tasks });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 // GET /tasks/my-tasks?status=pending
-export const getMyTasks = async (req: AuthRequest, res: Response) => {
+export const getTaskByStaff = async (req: AuthRequest, res: Response) => {
   try {
     const { status } = req.query;
 
-    const filter: any = { assignedTo: req.user._id };
+    const filter: any = { assignedTo: req.user.userId };
     if (status) filter.status = status;
 
-    const tasks = await TaskModel.find(filter).sort({ deadline: 1 });
+    const tasks = await TaskModel.find(filter)
+      .populate("createdBy", "name role email")
+      .populate("assignedTo", "name role email")
+      .sort({ deadline: 1 });
 
     res.json({ success: true, tasks });
   } catch (err: any) {
