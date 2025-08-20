@@ -12,7 +12,7 @@ import { authMiddleware } from "../middleware/auth";
 const StaffRoute = Router();
 
 StaffRoute.get("/getStaff", getAllStaff);
-StaffRoute.post("/createStaff", createStaff);
+StaffRoute.post("/createStaff", authMiddleware, createStaff);
 StaffRoute.post("/staffLogin", staffLogin);
 StaffRoute.patch("/staffStatusUpdate/:id", authMiddleware, staffStatusUpdate);
 StaffRoute.delete("/staffDelete/:id", authMiddleware, deleteStaff);
