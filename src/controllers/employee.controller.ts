@@ -97,14 +97,14 @@ export const employeeLogin = async (req: Request, res: Response) => {
   }
 };
 
-// export const getAllStaff = async (req: Request, res: Response) => {
-//   try {
-//     const user = await User.find();
-//     res.status(200).json({ message: "get all Satff", user });
-//   } catch (error: any) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
+export const getAllEmployee = async (req: Request, res: Response) => {
+  try {
+    const user = await Employee.find();
+    res.status(200).json({ message: "get all Employee", user });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 // // update staff status is active or not
 // export const staffStatusUpdate = async (req: Request, res: Response) => {

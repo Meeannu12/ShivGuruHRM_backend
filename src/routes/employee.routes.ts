@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   createStaff,
   employeeLogin,
+  getAllEmployee,
   // deleteStaff,
   // getAllStaff,
   // staffLogin,
@@ -13,12 +14,13 @@ import { upload } from "../config/upload";
 
 const employeeRoute = Router();
 
-// StaffRoute.get("/getStaff", getAllStaff);
+
 // StaffRoute.post("/createStaff", authMiddleware, createStaff);
 // StaffRoute.post("/staffLogin", staffLogin);
 // StaffRoute.patch("/staffStatusUpdate/:id", authMiddleware, staffStatusUpdate);
 // StaffRoute.delete("/staffDelete/:id", authMiddleware, deleteStaff);
 
+// create new employee 
 employeeRoute.post(
   "/createEmployee",
   upload.fields([
@@ -33,7 +35,9 @@ employeeRoute.post(
   ]),
   createStaff
 );
-
+//login api
 employeeRoute.post("/employeeLogin", employeeLogin);
+
+employeeRoute.get("/getEmployee",authMiddleware, getAllEmployee);
 
 export default employeeRoute;
