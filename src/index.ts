@@ -1,10 +1,11 @@
 import express, { Request, Response } from "express";
 import { connectDB } from "./config/db";
-import StaffRoute from "./routes/user.routes";
+import StaffRoute from "./routes/employee.routes";
 import dotenv from "dotenv";
 import cors from "cors";
 import attendanceRoute from "./routes/attendance.route";
 import taskRoute from "./routes/task.route";
+import EmployeeRoute from "./routes/employee.routes";
 dotenv.config();
 // import productRoutes from "./routes/product.routes";
 
@@ -24,7 +25,7 @@ app.use(
 );
 
 // Routes
-app.use("/api/staff", StaffRoute);
+app.use("/api/employee", EmployeeRoute);
 app.use("/api/attendance", attendanceRoute);
 app.use("/api/task", taskRoute);
 
