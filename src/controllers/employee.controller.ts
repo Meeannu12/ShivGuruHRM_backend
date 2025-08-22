@@ -1,5 +1,4 @@
 import { Router, Request, Response } from "express";
-import User from "../models/employee.model";
 import Employee from "../models/employee.model";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -59,49 +58,49 @@ export const createStaff = async (req: Request, res: Response) => {
   }
 };
 
+// // login staff api
+export const employeeLogin = async (req: Request, res: Response) => {
+  try {
+    const { employeeId, password } = req.body;
+    const employee = await Employee.findOne({ employeeId }).select("+password");
+    // console.log("login User Data", staffId, password, staff);
+    if (!employee) {
+      return res.status(404).json({ message: "employee id is incorrect" });
+    }
+    const matchPassword = await bcrypt.compare(password, employee.password);
+    if (!matchPassword) {
+      return res.status(401).json({ message: "password is incorrect" });
+    }
+
+    const payload = {
+      userId: employee._id,
+      name: employee.name,
+      employeeId: employee.employeeId,
+      isActive: employee.isActive,
+      employeeType: employee.employeeType,
+    };
+
+    // create jwt token and send the user
+    // console.log("check Token:", process.env.JWT_SECRET);
+    const token = jwt.sign(payload, process.env.JWT_SECRET as string, {
+      expiresIn: "1h",
+    });
+
+    // continue if login is successful
+    res.status(200).json({
+      message: "Login successful",
+      token,
+      employee: payload,
+    });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // export const getAllStaff = async (req: Request, res: Response) => {
 //   try {
 //     const user = await User.find();
 //     res.status(200).json({ message: "get all Satff", user });
-//   } catch (error: any) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
-
-// // login staff api
-// export const staffLogin = async (req: Request, res: Response) => {
-//   try {
-//     const { staffId, password } = req.body;
-//     const staff = await User.findOne({ staffId: staffId }).select("+password");
-//     // console.log("login User Data", staffId, password, staff);
-//     if (!staff) {
-//       return res.status(404).json({ message: "employee id is incorrect" });
-//     }
-//     const matchPassword = await bcrypt.compare(password, staff.password);
-//     if (!matchPassword) {
-//       return res.status(401).json({ message: "password is incorrect" });
-//     }
-
-//     const payload = {
-//       userId: staff._id,
-//       name: staff.name,
-//       staffId: staff.staffId,
-//       isActive: staff.isActive,
-//       role: staff.role,
-//     };
-
-//     // create jwt token and send the user
-//     // console.log("check Token:", process.env.JWT_SECRET);
-//     const token = jwt.sign(payload, process.env.JWT_SECRET as string, {
-//       expiresIn: "1h",
-//     });
-
-//     // continue if login is successful
-//     res.status(200).json({
-//       message: "Login successful",
-//       token,
-//       staff: payload,
-//     });
 //   } catch (error: any) {
 //     res.status(500).json({ message: error.message });
 //   }

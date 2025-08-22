@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import attendanceRoute from "./routes/attendance.route";
 import taskRoute from "./routes/task.route";
-import EmployeeRoute from "./routes/employee.routes";
+import employeeRoute from "./routes/employee.routes";
 dotenv.config();
 // import productRoutes from "./routes/product.routes";
 
@@ -25,7 +25,7 @@ app.use(
 );
 
 // Routes
-app.use("/api/employee", EmployeeRoute);
+app.use("/api/employee", employeeRoute);
 app.use("/api/attendance", attendanceRoute);
 app.use("/api/task", taskRoute);
 

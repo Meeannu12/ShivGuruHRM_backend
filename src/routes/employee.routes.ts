@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   createStaff,
+  employeeLogin,
   // deleteStaff,
   // getAllStaff,
   // staffLogin,
@@ -10,7 +11,7 @@ import { authMiddleware } from "../middleware/auth";
 import { upload } from "../config/upload";
 // import { createStaff, getAllStaff } from "../controllers/user.controller";
 
-const EmployeeRoute = Router();
+const employeeRoute = Router();
 
 // StaffRoute.get("/getStaff", getAllStaff);
 // StaffRoute.post("/createStaff", authMiddleware, createStaff);
@@ -18,7 +19,7 @@ const EmployeeRoute = Router();
 // StaffRoute.patch("/staffStatusUpdate/:id", authMiddleware, staffStatusUpdate);
 // StaffRoute.delete("/staffDelete/:id", authMiddleware, deleteStaff);
 
-EmployeeRoute.post(
+employeeRoute.post(
   "/createEmployee",
   upload.fields([
     { name: "aadhaarCard", maxCount: 1 },
@@ -33,4 +34,6 @@ EmployeeRoute.post(
   createStaff
 );
 
-export default EmployeeRoute;
+employeeRoute.post("/employeeLogin", employeeLogin);
+
+export default employeeRoute;
