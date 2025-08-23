@@ -14,6 +14,12 @@ export interface IEmployee extends Document {
   accountNumber: string;
   designation: string;
   isActive: boolean;
+  status: "active" | "on-notice" | "exit";
+  notice?: {
+    startDate: Date;
+    reason: string;
+    endDate: Date;
+  };
   department:
     | "digital-department"
     | "sales-and-marketing-department"
@@ -64,6 +70,16 @@ const EmployeeSchema: Schema<IEmployee> = new Schema(
     isActive: {
       type: Boolean,
       default: true,
+    },
+    status: {
+      type: String,
+      enum: ["active", "on-notice", "exit"],
+      default: "active",
+    },
+    notice: {
+      startDate: Date,
+      reason: String,
+      endDate: Date,
     },
     department: {
       type: String,
