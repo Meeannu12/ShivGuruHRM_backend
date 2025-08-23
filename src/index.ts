@@ -20,7 +20,7 @@ app.use(
   cors({
     origin: "http://localhost:3000", // your frontend URL
     credentials: true, // if you send cookies/auth headers
-    methods: ["GET", "POST"], // yaha specify karo jo methods chahiye
+    methods: ["GET", "POST", "PUT"], // yaha specify karo jo methods chahiye
     allowedHeaders: ["Content-Type", "Authorization"], // agar custom headers chahiye
   })
 );

@@ -77,6 +77,11 @@ export const employeeLogin = async (req: Request, res: Response) => {
       name: employee.name,
       employeeId: employee.employeeId,
       isActive: employee.isActive,
+      status: employee.status,
+      endDate:
+        employee.status === "on-notice"
+          ? employee?.notice?.endDate.toISOString()
+          : "",
       employeeType: employee.employeeType,
     };
 

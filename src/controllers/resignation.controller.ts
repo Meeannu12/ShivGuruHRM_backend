@@ -41,61 +41,79 @@ export const servingNotice = async (req: AuthRequest, res: Response) => {
   }
 };
 
-export const acceptResign = async (req: AuthRequest, res: Response) => {
+export const updateEmployeeResign = async (req: AuthRequest, res: Response) => {
   const user = req.user;
-  const id = req.params;
-  const { userId, reason } = req.body;
+  const id = req.params.id;
+  const { userId, reason, status } = req.body;
+
   try {
     // check employee have authorization or not
-    if (user.employeeType != "ceo" || user.employeeType != "hr") {
+    if (user.employeeType != "ceo" && user.employeeType != "hr") {
       res.status(400).json({ success: false, message: "you are Unauthorized" });
       return;
     }
 
-    // get Employee Detail from DB
-    const reasignEmployee = await EmployeeModel.findById(userId);
-    if (!reasignEmployee) {
-      res.status(404).json({ success: false, message: "User not exist in DB" });
-      return;
+    if (status === "Accepted") {
+      // get Employee Detail from DB
+      const reasignEmployee = await EmployeeModel.findById(userId);
+      if (!reasignEmployee) {
+        res
+          .status(404)
+          .json({ success: false, message: "User not exist in DB" });
+        return;
+      }
+      const date = new Date();
+
+      const notice = {
+        startDate: date,
+        endDate: getAfterFifteen(),
+        reason,
+      };
+
+      reasignEmployee.status = "on-notice";
+      reasignEmployee.notice = notice;
+      await reasignEmployee.save();
+
+      await ResignationModel.findByIdAndUpdate(
+        id,
+        {
+          $set: { status: "accept" },
+        },
+        { new: true }
+      );
+    } else {
+      await ResignationModel.findByIdAndUpdate(
+        id,
+        {
+          $set: { status: "reject" },
+        },
+        { new: true }
+      );
     }
-    const date = new Date();
-
-    const notice = {
-      startDate: date,
-      endDate: getAfterFifteen(),
-      reason,
-    };
-
-    reasignEmployee.status = "on-notice";
-    reasignEmployee.notice = notice;
-    await reasignEmployee.save();
-
-    await ResignationModel.findByIdAndUpdate(
-      id,
-      {
-        $set: { status: "accept" },
-      },
-      { new: true }
-    );
 
     res
       .status(200)
-      .json({ success: true, message: "resign Accepted successful" });
+      .json({ success: true, message: `resign ${status} successful` });
   } catch (error: any) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-export const getPendingNoticeRequest = async (req: AuthRequest, res: Response) => {
+export const getPendingNoticeRequest = async (
+  req: AuthRequest,
+  res: Response
+) => {
   const user = req.user;
   try {
     // check employee have authorization or not
-    if (user.employeeType != "ceo" || user.employeeType != "hr") {
+    if (user.employeeType != "ceo" && user.employeeType != "hr") {
       res.status(400).json({ success: false, message: "you are Unauthorized" });
       return;
     }
 
-    const reasignEmployee = await ResignationModel.find({ status: "pending" });
+    const reasignEmployee = await ResignationModel.find({
+      status: "pending",
+    }).populate("userId");
     res.status(200).json({ success: true, employee: reasignEmployee });
   } catch (error: any) {
     res.status(500).json({ success: false, message: error.message });
