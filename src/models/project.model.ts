@@ -28,7 +28,7 @@ const ProjectSchema = new Schema<IProject>(
       ref: "Clients",
       required: true,
     },
-    language: { tyep: String, required: true },
+    language: { type: String, required: true },
     amount: {
       type: String,
       required: true,
