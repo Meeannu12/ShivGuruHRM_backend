@@ -6,7 +6,7 @@ import { AuthRequest } from "../middleware/auth";
 export const createTask = async (req: AuthRequest, res: Response) => {
   try {
     const { title, description, assignedTo, priority, deadline } = req.body;
-    console.log(req.user);
+    // console.log(req.user);
     const task = await TaskModel.create({
       title,
       description,

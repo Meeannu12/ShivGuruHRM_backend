@@ -44,7 +44,7 @@ export const createProject = async (req: Request, res: Response) => {
 
 export const getAllProject = async (req: Request, res: Response) => {
   try {
-    const newProject = await ProjectModel.find();
+    const newProject = await ProjectModel.find().populate("client")
     res
       .status(200)
       .json({
