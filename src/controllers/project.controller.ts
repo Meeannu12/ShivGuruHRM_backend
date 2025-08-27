@@ -13,16 +13,16 @@ export const createProject = async (req: Request, res: Response) => {
       amount,
     }: IProject = req.body;
 
-    console.log(
-      "create Project",
-      name,
-      code,
-      assignDate,
-      deadline,
-      client,
-      language,
-      amount
-    );
+    // console.log(
+    //   "create Project",
+    //   name,
+    //   code,
+    //   assignDate,
+    //   deadline,
+    //   client,
+    //   language,
+    //   amount
+    // );
 
     const newProject = new ProjectModel({
       name,
@@ -33,10 +33,25 @@ export const createProject = async (req: Request, res: Response) => {
       language,
       amount,
     });
-    // await newProject.save();
+    await newProject.save();
     res
       .status(201)
       .json({ success: true, message: "New Project Add Successful" });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export const getAllProject = async (req: Request, res: Response) => {
+  try {
+    const newProject = await ProjectModel.find();
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: "Get All Project Successfully",
+        project: newProject,
+      });
   } catch (error: any) {
     res.status(500).json({ success: false, message: error.message });
   }
