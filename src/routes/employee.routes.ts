@@ -3,10 +3,6 @@ import {
   createStaff,
   employeeLogin,
   getAllEmployee,
-  // deleteStaff,
-  // getAllStaff,
-  // staffLogin,
-  // staffStatusUpdate,
 } from "../controllers/employee.controller";
 import { authMiddleware } from "../middleware/auth";
 import { upload } from "../config/upload";

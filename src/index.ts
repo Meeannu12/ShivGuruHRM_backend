@@ -7,6 +7,7 @@ import attendanceRoute from "./routes/attendance.route";
 import taskRoute from "./routes/task.route";
 import employeeRoute from "./routes/employee.routes";
 import serveNotice from "./routes/resignation.routes";
+import clientRoute from "./routes/client.route";
 dotenv.config();
 // import productRoutes from "./routes/product.routes";
 
@@ -30,6 +31,7 @@ app.use("/api/employee", employeeRoute);
 app.use("/api/attendance", attendanceRoute);
 app.use("/api/task", taskRoute);
 app.use("/api/serveNotice", serveNotice);
+app.use("/api/client", clientRoute);
 
 app.get("/api", (req: Request, res: Response) => {
   res.status(200).json({ message: "Server is running on 3000" });
