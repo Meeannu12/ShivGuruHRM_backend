@@ -5,6 +5,7 @@ export interface IClient extends Document {
   phone: string;
   address: string;
   email: string;
+  wallet: number;
 }
 
 const ClientSchema = new Schema<IClient>(
@@ -16,6 +17,7 @@ const ClientSchema = new Schema<IClient>(
       required: true,
     },
     address: String,
+    wallet: { type: Number, default: 0 },
     email: {
       type: String,
       unique: true,
