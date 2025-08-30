@@ -1,19 +1,27 @@
 import express, { Request, Response } from "express";
 import { connectDB } from "./config/db";
-import StaffRoute from "./routes/employee.routes";
 import dotenv from "dotenv";
 import cors from "cors";
+const http = require("http");
+const { Server } = require("socket.io");
 import attendanceRoute from "./routes/attendance.route";
 import taskRoute from "./routes/task.route";
 import employeeRoute from "./routes/employee.routes";
 import serveNotice from "./routes/resignation.routes";
 import clientRoute from "./routes/client.route";
 import projectRoute from "./routes/project.route";
+import { chatSocket } from "./sockets/chatSocket";
+import chatRoute from "./routes/chats.route";
 dotenv.config();
 // import productRoutes from "./routes/product.routes";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: { origin: "http://localhost:3000", credentials: true },
+});
 
 app.use(express.json()); // parse JSON body
 
@@ -34,12 +42,16 @@ app.use("/api/task", taskRoute);
 app.use("/api/serveNotice", serveNotice);
 app.use("/api/client", clientRoute);
 app.use("/api/project", projectRoute);
+app.use("/api/chats", chatRoute);
 
-app.get("/api", (req: Request, res: Response) => {
-  res.status(200).json({ message: "Server is running on 3000" });
+app.get("/api/check", (req, res) => {
+  res.json({ message: "Server running and socket.io is ready" });
 });
+
+// use socket
+chatSocket(io);
 // app.use("/api/products", productRoutes);
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
