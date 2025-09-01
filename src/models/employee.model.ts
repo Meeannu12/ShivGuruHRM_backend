@@ -15,6 +15,7 @@ export interface IEmployee extends Document {
   designation: string;
   isActive: boolean;
   status: "active" | "on-notice" | "exit";
+  dob: Date;
   notice?: {
     startDate: Date;
     reason: string;
@@ -34,6 +35,7 @@ export interface IEmployee extends Document {
     | "ceo"
     | "cfo"
     | "cso"
+    | "ciso"
     | "managing director"
     | "general manager"
     | "hr"
@@ -46,6 +48,7 @@ export interface IEmployee extends Document {
 
   // File uploads (URLs / paths)
   aadhaarCard?: string | null;
+  panCard?: string | null;
   photo?: string | null;
   tenthMarksheet?: string | null;
   twelfthMarksheet?: string | null;
@@ -95,6 +98,10 @@ const EmployeeSchema: Schema<IEmployee> = new Schema(
       ],
       required: true,
     },
+    dob: {
+      type: Date,
+      required: true,
+    },
     salary: {
       type: String,
       required: true,
@@ -107,6 +114,7 @@ const EmployeeSchema: Schema<IEmployee> = new Schema(
         "ceo",
         "cfo",
         "cso",
+        "ciso",
         "managing-director",
         "general-manager",
         "hr",
@@ -121,6 +129,7 @@ const EmployeeSchema: Schema<IEmployee> = new Schema(
     address: { type: String, required: true },
 
     // File uploads → just store URLs or file paths
+    panCard: { type: String },
     aadhaarCard: { type: String },
     photo: { type: String },
     tenthMarksheet: { type: String },

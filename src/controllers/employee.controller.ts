@@ -27,6 +27,7 @@ export const createStaff = async (req: Request, res: Response) => {
       email: req.body.email,
       bloodGroup: req.body.bloodGroup,
       bankName: req.body.bankName,
+      dob: req.body.dob,
       bankIfsc: req.body.bankIfsc,
       accountNumber: req.body.accountNumber,
       designation: req.body.designation,
@@ -38,6 +39,7 @@ export const createStaff = async (req: Request, res: Response) => {
       salary: req.body.salary,
       employeeId,
       // file added here
+      panCard: files?.panCard?.[0]?.filename || null,
       aadhaarCard: files?.aadhaarCard?.[0]?.filename || null,
       photo: files?.photo?.[0]?.filename || null,
       tenthMarksheet: files?.tenthMarksheet?.[0]?.filename || null,
