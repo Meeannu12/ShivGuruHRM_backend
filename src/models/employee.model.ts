@@ -24,10 +24,12 @@ export interface IEmployee extends Document {
     | "digital-department"
     | "sales-and-marketing-department"
     | "hr-department"
+    | "company"
     | "technical-department"
     | "information-and-security-department";
   password: string;
   joinDate: Date;
+  salary?: string;
   employeeType:
     | "ceo"
     | "cfo"
@@ -87,9 +89,14 @@ const EmployeeSchema: Schema<IEmployee> = new Schema(
         "technical-department",
         "digital-department",
         "sales-and-marketing-department",
+        "company",
         "hr-department",
         "information-and-security-department",
       ],
+      required: true,
+    },
+    salary: {
+      type: String,
       required: true,
     },
     password: { type: String, required: true, minlength: 6, select: false },

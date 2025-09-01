@@ -35,6 +35,7 @@ export const createStaff = async (req: Request, res: Response) => {
       address: req.body.address,
       joinDate: req.body.joinDate,
       employeeType: req.body.employeeType,
+      salary: req.body.salary,
       employeeId,
       // file added here
       aadhaarCard: files?.aadhaarCard?.[0]?.filename || null,
@@ -88,7 +89,7 @@ export const employeeLogin = async (req: Request, res: Response) => {
     // create jwt token and send the user
     // console.log("check Token:", process.env.JWT_SECRET);
     const token = jwt.sign(payload, process.env.JWT_SECRET as string, {
-      expiresIn: "1h",
+      expiresIn: "8d",
     });
 
     // continue if login is successful
