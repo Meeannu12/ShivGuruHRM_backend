@@ -68,7 +68,13 @@ export const getChatsMessages = async (req: AuthRequest, res: Response) => {
         createdAt: 1,
       })
       .populate("sender", "name")
-      .populate("conversation");
+      .populate({
+        path: "conversation",
+        populate: {
+          path: "participants", // conversation ke andar ke participants populate
+          select: "name email", // jo fields chahiye unhe select kar
+        },
+      });
 
     res.status(200).json({ success: true, messages });
   } catch (error: any) {
