@@ -56,11 +56,19 @@ export const getChatsMessages = async (req: AuthRequest, res: Response) => {
   const { conversationId } = req.params;
 
   try {
+    // const twoDaysAgo = new Date();
+    // twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+
     const messages = await messageModel
-      .find({ conversation: conversationId })
+      .find({
+        conversation: conversationId,
+        // createdAt: { $gte: twoDaysAgo }, // ✅ last 2 days ke messages hi
+      })
       .sort({
         createdAt: 1,
-      }).populate("sender", "name")
+      })
+      .populate("sender", "name")
+      .populate("conversation");
 
     res.status(200).json({ success: true, messages });
   } catch (error: any) {
