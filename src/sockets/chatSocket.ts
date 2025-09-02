@@ -66,7 +66,13 @@ const chatSocket = (io: Server) => {
           message: data.message,
         });
 
-        io.to(data.conversationId).emit("receiveMessage", newMessage);
+        // Message create hone ke baad populate karo
+        const populatedMessage = await MessageModel.findById(
+          newMessage._id
+        ).populate("sender", "name"); // jo fields chahiye wo select kar
+        // .populate("conversation", "name"); // agar group ka naam bhi chahiye
+
+        io.to(data.conversationId).emit("receiveMessage", populatedMessage);
       } catch (err) {
         console.error("Error creating message:", err);
         socket.emit("error", {

@@ -60,7 +60,7 @@ export const getChatsMessages = async (req: AuthRequest, res: Response) => {
       .find({ conversation: conversationId })
       .sort({
         createdAt: 1,
-      });
+      }).populate("sender", "name")
 
     res.status(200).json({ success: true, messages });
   } catch (error: any) {
