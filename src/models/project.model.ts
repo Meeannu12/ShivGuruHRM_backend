@@ -9,6 +9,7 @@ export interface IProject extends Document {
   client: Schema.Types.ObjectId;
   language: string;
   amount: string;
+  status: "pending" | "complete";
   //   completedAt?: Date;
 }
 
@@ -29,6 +30,11 @@ const ProjectSchema = new Schema<IProject>(
       required: true,
     },
     language: { type: String, required: true },
+    status: {
+      type: String,
+      enum: ["pending", "complete"],
+      default: "pending",
+    },
     amount: {
       type: String,
       required: true,

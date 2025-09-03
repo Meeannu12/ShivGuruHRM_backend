@@ -44,14 +44,17 @@ export const createProject = async (req: Request, res: Response) => {
 
 export const getAllProject = async (req: Request, res: Response) => {
   try {
-    const newProject = await ProjectModel.find().populate("client")
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "Get All Project Successfully",
-        project: newProject,
-      });
+    const newProject = await ProjectModel.find().populate("client");
+    const pendingProject = await ProjectModel.countDocuments({
+      status: "pending",
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Get All Project Successfully",
+      project: newProject,
+      pendingProject,
+    });
   } catch (error: any) {
     res.status(500).json({ success: false, message: error.message });
   }

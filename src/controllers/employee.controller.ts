@@ -108,7 +108,24 @@ export const employeeLogin = async (req: Request, res: Response) => {
 export const getAllEmployee = async (req: Request, res: Response) => {
   try {
     const user = await Employee.find();
-    res.status(200).json({ message: "get all Employee", user });
+    const totalActiveEmployee = await Employee.countDocuments({
+      status: { $in: ["active", "on-notice"] },
+    });
+    const totalFreelancer = await Employee.countDocuments({
+      status: { $in: ["active", "on-notice"] },
+      employeeType: "freelancer",
+    });
+    const totalOnnotice = await Employee.countDocuments({
+      status: "on-notice",
+    });
+
+    res.status(200).json({
+      message: "get all Employee",
+      user,
+      total: totalActiveEmployee,
+      freelancer: totalFreelancer,
+      onNotice: totalOnnotice,
+    });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }
