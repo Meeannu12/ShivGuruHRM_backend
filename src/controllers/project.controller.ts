@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import ProjectModel, { IProject } from "../models/project.model";
 import { AuthRequest } from "../middleware/auth";
+import ClientModel from "../models/client.model";
 
 export const createProject = async (req: Request, res: Response) => {
   try {
@@ -76,6 +77,15 @@ export const submitProject = async (req: AuthRequest, res: Response) => {
       return res
         .status(404)
         .json({ success: false, message: "Project not Exist In DB" });
+
+    // console.log("get Client", newSubmitProject);
+    await ClientModel.findByIdAndUpdate(
+      newSubmitProject.client,
+      {
+        $inc: { wallet: newSubmitProject.amount }, // jitna amount hai, utna add karega
+      },
+      { new: true } // updated document return karega
+    );
 
     newSubmitProject.submitDate = submitDate;
     newSubmitProject.status = "complete";
