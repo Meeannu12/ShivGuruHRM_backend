@@ -51,7 +51,11 @@ export const getTaskByStaff = async (req: AuthRequest, res: Response) => {
     const { status } = req.query;
 
     const filter: any = { assignedTo: req.user.userId };
-    if (status) filter.status = status;
+    if (status) {
+      filter.status = status;
+    } else {
+      filter.status = { $in: ["pending", "in-progress"] }; // dono status
+    }
 
     const tasks = await TaskModel.find(filter)
       .populate("createdBy", "name role email")
@@ -67,21 +71,26 @@ export const getTaskByStaff = async (req: AuthRequest, res: Response) => {
 // PATCH /tasks/:id
 export const updateTaskStatus = async (req: AuthRequest, res: Response) => {
   try {
-    const { status } = req.body;
+    const { status, id } = req.body;
+
+    // console.log("hhhhh", req.user, status);
 
     const task = await TaskModel.findOneAndUpdate(
-      { _id: req.params.id, assignedTo: req.user._id }, // only owner can update
+      { _id: id, assignedTo: req.user.userId }, // only owner can update
       { status },
       { new: true }
     );
 
-    if (!task)
-      return res
-        .status(404)
-        .json({ success: false, message: "Task not found" });
+    if (!task) {
+      res.status(404).json({ success: false, message: "Task not found" });
+      return;
+    }
 
-    res.json({ success: true, task });
+    res
+      .status(201)
+      .json({ success: true, message: `Task Status Is ${status}` });
   } catch (err: any) {
+    console.log(err.message);
     res.status(500).json({ success: false, message: err.message });
   }
 };

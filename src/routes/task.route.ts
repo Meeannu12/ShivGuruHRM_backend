@@ -3,6 +3,7 @@ import {
   createTask,
   getAssignedTasks,
   getTaskByStaff,
+  updateTaskStatus,
 } from "../controllers/task.controller";
 import { authMiddleware } from "../middleware/auth";
 
@@ -13,5 +14,8 @@ taskRoute.post("/createTask", authMiddleware, createTask);
 taskRoute.get("/getAssignedTasks", authMiddleware, getAssignedTasks);
 
 taskRoute.get("/getTasksByStaff", authMiddleware, getTaskByStaff);
+
+// update task status
+taskRoute.post("/updateTaskStatus", authMiddleware, updateTaskStatus)
 
 export default taskRoute;
