@@ -132,3 +132,45 @@ export const getTaskReport = async (req: AuthRequest, res: Response) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+
+export const getTaskStatusByCeo = async (req: AuthRequest, res: Response) => {
+  try {
+    const taskSummary = await TaskModel.aggregate([
+      {
+        $group: {
+          _id: "$assignedTo",
+          totalTasks: { $sum: 1 },
+          pending: { $sum: { $cond: [{ $eq: ["$status", "pending"] }, 1, 0] } },
+          inProgress: {
+            $sum: { $cond: [{ $eq: ["$status", "in-progress"] }, 1, 0] },
+          },
+          completed: {
+            $sum: { $cond: [{ $eq: ["$status", "completed"] }, 1, 0] },
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: "employees",
+          localField: "_id",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+      { $unwind: "$user" },
+      {
+        $project: {
+          employee: "$user.name",
+          totalTasks: 1,
+          pending: 1,
+          inProgress: 1,
+          completed: 1,
+        },
+      },
+    ]);
+    // console.log("response Data", taskSummary);
+    res.status(200).json({success:true, message:"get All Task Report by Cro", tasks:taskSummary})
+  } catch (error) {
+    res.status(500).json({ success: false });
+  }
+};
