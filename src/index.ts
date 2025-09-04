@@ -12,6 +12,7 @@ import clientRoute from "./routes/client.route";
 import projectRoute from "./routes/project.route";
 import { chatSocket } from "./sockets/chatSocket";
 import chatRoute from "./routes/chats.route";
+import notificationRoute from "./routes/notification.route";
 dotenv.config();
 // import productRoutes from "./routes/product.routes";
 
@@ -46,6 +47,7 @@ app.use("/api/serveNotice", serveNotice);
 app.use("/api/client", clientRoute);
 app.use("/api/project", projectRoute);
 app.use("/api/chats", chatRoute);
+app.use("/api/notification", notificationRoute);
 
 app.get("/api/check", (req, res) => {
   res.json({ message: "Server running and socket.io is ready" });
