@@ -12,7 +12,7 @@ export const applyLeave = async (req: AuthRequest, res: Response) => {
     const { startDate, endDate, type, reason, approver } = req.body;
 
     const leave = await LeaveModel.create({
-      userId: req.user._id,
+      employee: req.user.userId,
       approver,
       type,
       reason,
@@ -20,7 +20,7 @@ export const applyLeave = async (req: AuthRequest, res: Response) => {
       endDate,
     });
 
-    res.status(201).json({ success: true, leave });
+    res.status(201).json({ success: true, message: "request Send successful" });
   } catch (error: any) {
     res.status(500).json({ success: false, message: error.message });
   }
