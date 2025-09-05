@@ -9,6 +9,7 @@ export interface IAttendance extends Document {
   totalHours?: number; // decimal hours
   status: "present" | "absent" | "half-day" | "leave";
   name?: string;
+  isHoliday: boolean;
 }
 
 const AttendanceSchema = new Schema<IAttendance>(
@@ -21,6 +22,7 @@ const AttendanceSchema = new Schema<IAttendance>(
     checkOut: { type: Date },
     totalHours: { type: Number },
     name: { type: String },
+    isHoliday: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
