@@ -45,6 +45,31 @@ export const getAssignedTasks = async (req: AuthRequest, res: Response) => {
   }
 };
 
+export const getCompletedTaskByEmployee = async (
+  req: AuthRequest,
+  res: Response
+) => {
+  try {
+    const { status } = req.query;
+
+    const filter: any = { assignedTo: req.user.userId };
+    if (status) {
+      filter.status = status;
+    } else {
+      filter.status = { $in: ["submit", "completed"] }; // dono status
+    }
+
+    const tasks = await TaskModel.find(filter)
+      .populate("createdBy", "name email")
+      .populate("assignedTo", "name email")
+      .sort({ deadline: 1 });
+
+    res.json({ success: true, tasks });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 // GET /tasks/my-tasks?status=pending
 export const getTaskByStaff = async (req: AuthRequest, res: Response) => {
   try {
@@ -169,7 +194,11 @@ export const getTaskStatusByCeo = async (req: AuthRequest, res: Response) => {
       },
     ]);
     // console.log("response Data", taskSummary);
-    res.status(200).json({success:true, message:"get All Task Report by Cro", tasks:taskSummary})
+    res.status(200).json({
+      success: true,
+      message: "get All Task Report by Cro",
+      tasks: taskSummary,
+    });
   } catch (error) {
     res.status(500).json({ success: false });
   }

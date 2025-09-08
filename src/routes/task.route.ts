@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   createTask,
   getAssignedTasks,
+  getCompletedTaskByEmployee,
   getTaskByStaff,
   getTaskStatusByCeo,
   updateTaskStatus,
@@ -16,9 +17,15 @@ taskRoute.get("/getAssignedTasks", authMiddleware, getAssignedTasks);
 
 taskRoute.get("/getTasksByStaff", authMiddleware, getTaskByStaff);
 
-// update task status
-taskRoute.post("/updateTaskStatus", authMiddleware, updateTaskStatus)
+taskRoute.get(
+  "/getCompletedTaskByEmployee",
+  authMiddleware,
+  getCompletedTaskByEmployee
+);
 
-taskRoute.get("/getTaskStatusByCeo", authMiddleware, getTaskStatusByCeo)
+// update task status
+taskRoute.post("/updateTaskStatus", authMiddleware, updateTaskStatus);
+
+taskRoute.get("/getTaskStatusByCeo", authMiddleware, getTaskStatusByCeo);
 
 export default taskRoute;
