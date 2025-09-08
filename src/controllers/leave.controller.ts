@@ -26,6 +26,24 @@ export const applyLeave = async (req: AuthRequest, res: Response) => {
   }
 };
 
+export const getAllLeaves = async (req: AuthRequest, res: Response) => {
+  const userId = req.user.userId;
+  try {
+    // console.log("UserId", userId);
+    const newLeave = await LeaveModel.find({ employee: userId }).populate(
+      "approver",
+      "name"
+    );
+    res.status(200).json({
+      success: true,
+      message: "get Apply Leave status",
+      Leave: newLeave,
+    });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 export const approveLeave = async (req: AuthRequest, res: Response) => {
   try {
     const leave = await LeaveModel.findById(req.params.id);

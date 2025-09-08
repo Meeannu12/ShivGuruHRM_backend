@@ -6,7 +6,7 @@ interface ITask extends Document {
   assignedTo: Schema.Types.ObjectId; // User (Employee)
   createdBy: Schema.Types.ObjectId;  // Manager/Admin
   priority: "low" | "medium" | "high";
-  status: "pending" | "in-progress" | "completed";
+  status: "pending" | "in-progress" | "completed"| "reAssign";
   deadline?: Date;
   completedAt?: Date;
 }

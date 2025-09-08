@@ -12,7 +12,7 @@ export const GetChatConversations = async (req: AuthRequest, res: Response) => {
     const conversations = await ConversationModel.find({
       participants: userId,
     })
-      .populate("participants", "name photo") // sirf naam & pic laa
+      .populate("participants", "name photo employeeType") // sirf naam & pic laa
       .sort({ lastMessageAt: -1 });
 
     // console.log("user chats", conversations);

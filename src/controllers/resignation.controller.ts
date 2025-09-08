@@ -41,6 +41,22 @@ export const servingNotice = async (req: AuthRequest, res: Response) => {
   }
 };
 
+export const getResignStatus = async (req: AuthRequest, res: Response) => {
+  const userId = req.user.userId;
+  try {
+    const resignStatus = await ResignationModel.find({ userId });
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: "get All Resign data from DB",
+        Resign: resignStatus,
+      });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 export const updateEmployeeResign = async (req: AuthRequest, res: Response) => {
   const user = req.user;
   const id = req.params.id;
