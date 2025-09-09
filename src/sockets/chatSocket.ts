@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import MessageModel from "../models/message.model";
 import { Server, Socket } from "socket.io";
 import mongoose from "mongoose";
+import ConversationModel from "../models/conversation.model";
 // import ConversationModel from "../models/conversation.model";
 
 interface AuthSocket extends Socket {
@@ -64,6 +65,13 @@ const chatSocket = (io: Server) => {
           conversation: new mongoose.Types.ObjectId(data.conversationId),
           sender: new mongoose.Types.ObjectId(socket.user.userId),
           message: data.message,
+        });
+
+        await ConversationModel.findByIdAndUpdate(data.conversationId, {
+          $set: {
+            lastMessage: data.message,
+            lastMessageAt: Date.now(),
+          },
         });
 
         // Message create hone ke baad populate karo
