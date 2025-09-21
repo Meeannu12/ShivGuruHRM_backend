@@ -64,12 +64,12 @@ export const updateEmployeeResign = async (req: AuthRequest, res: Response) => {
 
   try {
     // check employee have authorization or not
-    if (user.employeeType != "ceo" && user.employeeType != "hr") {
-      res.status(400).json({ success: false, message: "you are Unauthorized" });
-      return;
-    }
+    // if (user.employeeType != "ceo" && user.employeeType != "hr") {
+    //   res.status(400).json({ success: false, message: "you are Unauthorized" });
+    //   return;
+    // }
 
-    if (status === "Accepted") {
+    if (status === "approve") {
       // get Employee Detail from DB
       const reasignEmployee = await EmployeeModel.findById(userId);
       if (!reasignEmployee) {
@@ -130,7 +130,7 @@ export const getPendingNoticeRequest = async (
     const reasignEmployee = await ResignationModel.find({
       status: "pending",
     }).populate("userId");
-    res.status(200).json({ success: true, employee: reasignEmployee });
+    res.status(200).json({ success: true, resign: reasignEmployee });
   } catch (error: any) {
     res.status(500).json({ success: false, message: error.message });
   }

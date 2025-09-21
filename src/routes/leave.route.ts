@@ -1,10 +1,14 @@
 import { Router } from "express";
 import { authMiddleware } from "../middleware/auth";
-import { applyLeave, getAllLeaves } from "../controllers/leave.controller";
+import { applyLeave, approveLeave, getAllLeaves, getAllLeavesByApprover, rejectLeave } from "../controllers/leave.controller";
 
 const leaveRoute = Router();
 
 leaveRoute.post("/applyLeave", authMiddleware, applyLeave);
 leaveRoute.get("/getAllLeaves", authMiddleware, getAllLeaves);
+leaveRoute.get("/getAllLeavesByApprover", authMiddleware, getAllLeavesByApprover)
+//
+leaveRoute.post("/approveLeave/:id", authMiddleware, approveLeave)
+leaveRoute.post("/rejectLeave/:id", authMiddleware, rejectLeave)
 
 export default leaveRoute;
