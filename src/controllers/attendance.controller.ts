@@ -39,81 +39,109 @@ export const getAttendancebyStaff = async (req: AuthRequest, res: Response) => {
 export const checkIn = async (req: AuthRequest, res: Response) => {
   try {
     const user = req.user;
-    // console.log("checkIN", user);
     const userId = new mongoose.Types.ObjectId(req.user.userId);
 
-    // console.log("user data get from token", user);
-    const date = ymd();
+    const date = ymd()
+
+    // ✅ Always use IST date
     const now = new Date();
-    const existing = await Attendance.findOne({ userId, date });
+    const istDate = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
+
+    // ✅ Day boundaries
+    const startOfDay = new Date(istDate);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date(istDate);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    // ✅ Check existing
+    const existing = await Attendance.findOne({
+      userId,
+      date,
+    });
+
     if (existing && existing.checkIn)
       return res.status(400).json({ message: "Already checked in" });
 
-    // 🔹 Status calculate karo
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
-    let status: TAttendanceStatus = "absent"; // default
+    // ✅ Status calculate
+    const hours = istDate.getHours();
+    const minutes = istDate.getMinutes();
 
-    // Check 10:00 - 10:30
-    if (
-      hours === 10 &&
-      minutes >= 0 &&
-      minutes <= 30 // 10:00 - 10:30
-    ) {
+    let status: TAttendanceStatus = "absent"; // default
+    if ((hours === 9 && minutes >= 58) || (hours === 10 && minutes <= 30)) {
       status = "present";
-    }
-    // Check 10:31 - 13:30
-    else if (
-      (hours === 10 && minutes > 30) || // 10:31 - 10:59
-      (hours >= 11 && hours < 13) || // 11:00 - 12:59
-      (hours === 13 && minutes <= 30) // 13:00 - 13:30
+    } else if (
+      (hours === 10 && minutes > 30) ||
+      (hours >= 11 && hours < 13) ||
+      (hours === 13 && minutes <= 30)
     ) {
       status = "half-day";
     }
 
     if (existing) {
-      existing.checkIn = now;
-      existing.status = status; // 👈 update status
+      existing.checkIn = istDate;
+      existing.status = status;
       await existing.save();
       return res.json(existing);
     }
 
+    // ✅ Save new doc
     const doc = await Attendance.create({
       userId,
       date,
-      checkIn: now,
+      checkIn: istDate,
       status,
       name: user.name,
       staffId: user.employeeId,
     });
+
     res.status(201).json({ message: `${doc.name} checkIn at ${doc.checkIn}` });
   } catch (err: any) {
     res.status(500).json({ message: err.message });
   }
 };
 
+
 export const checkOut = async (req: AuthRequest, res: Response) => {
   try {
-    // const user = req.user;
     const userId = new mongoose.Types.ObjectId(req.user.userId);
-    const date = ymd();
-    const existing = await Attendance.findOne({ userId, date });
-    if (!existing || !existing.checkIn)
-      return res.status(400).json({ message: "No check-in found" });
-    if (existing.checkOut)
-      return res.status(400).json({ message: "Already checked out" });
 
-    existing.checkOut = new Date();
+    // ✅ Always use IST time
+    const now = new Date();
+    const istDate = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
+
+    const date = ymd()
+
+    // ✅ Find today's attendance
+    const existing = await Attendance.findOne({
+      userId,
+      date,
+    });
+
+    if (!existing || !existing.checkIn) {
+      return res.status(400).json({ message: "No check-in found" });
+    }
+    if (existing.checkOut) {
+      return res.status(400).json({ message: "Already checked out" });
+    }
+
+    // ✅ Save IST checkout time
+    existing.checkOut = istDate;
+
+    // ✅ Calculate hours
     const diffMs = existing.checkOut.getTime() - existing.checkIn!.getTime();
-    existing.totalHours = Math.round((diffMs / (1000 * 60 * 60)) * 100) / 100; // two decimals
+    existing.totalHours = Math.round((diffMs / (1000 * 60 * 60)) * 100) / 100;
+
     const doc = await existing.save();
+
     res.status(200).json({
-      message: `${doc.name} CheckOut total working hour ${doc.totalHours}`,
+      message: `${doc.name} checked out. Total working hours: ${doc.totalHours}`,
     });
   } catch (err: any) {
     res.status(500).json({ message: err.message });
   }
 };
+
 
 // export const getMonthReport = async (req: Request, res: Response) => {
 //   try {
