@@ -14,6 +14,7 @@ import { chatSocket } from "./sockets/chatSocket";
 import chatRoute from "./routes/chats.route";
 import notificationRoute from "./routes/notification.route";
 import leaveRoute from "./routes/leave.route";
+import path from "path";
 dotenv.config();
 // import productRoutes from "./routes/product.routes";
 
@@ -29,6 +30,10 @@ const io = new Server(server, {
 });
 
 app.use(express.json()); // parse JSON body
+
+
+// Folder jahan images store ho rahi hain
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 connectDB();
 app.use(

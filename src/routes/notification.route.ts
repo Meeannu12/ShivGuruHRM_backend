@@ -5,6 +5,7 @@ import {
   getAllNotification,
   MarkReadNotification,
 } from "../controllers/notification.controller";
+import { upload } from "../config/upload";
 
 const notificationRoute = Router();
 
@@ -16,7 +17,7 @@ notificationRoute.get(
 
 notificationRoute.post(
   "/createNotification",
-  authMiddleware,
+  authMiddleware, upload.single("image"),
   createNotification
 );
 

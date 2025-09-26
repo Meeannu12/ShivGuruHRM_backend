@@ -5,13 +5,22 @@ import NotificationModel from "../models/notification.model";
 export const createNotification = async (req: AuthRequest, res: Response) => {
   try {
     const { title, message } = req.body;
-    const notification = await NotificationModel.create({
+
+    console.log(title, message, req.file?.filename)
+
+
+    const data: any = {
       title,
       message,
       createdBy: req.user.userId,
-    });
+    }
+
+    if (req.file) data.image = req.file.filename
+
+    const notification = await NotificationModel.create(data);
     res.status(201).json({ success: true, message: "Create new Notification" });
   } catch (error: any) {
+    console.log(error.message)
     res.status(500).json({ success: false, message: error.message });
   }
 };

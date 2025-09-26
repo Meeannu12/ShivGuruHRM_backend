@@ -4,6 +4,7 @@ export interface IMNoticfication extends Document {
   title: string;
   message: string;
   createdBy: Schema.Types.ObjectId;
+  image?: string
   readBy: Schema.Types.ObjectId[];
 }
 
@@ -11,6 +12,7 @@ const NotificationSchema = new Schema<IMNoticfication>(
   {
     title: String,
     message: String,
+    image: String,
     createdBy: {
       type: Schema.Types.ObjectId,
       ref: "Employee",
