@@ -6,7 +6,7 @@ import ClientHistoryModel from "../models/clientHistory.model";
 export const addClient = async (req: Request, res: Response) => {
   const { name, phone, address, email }: IClient = req.body;
   try {
-    console.log(name, phone, address, email);
+    // console.log(name, phone, address, email);
 
     const existingClient = await ClientModel.findOne({
       $or: [{ phone }, { email }],

@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, response, Response } from "express";
 import ProjectModel, { IProject } from "../models/project.model";
 import { AuthRequest } from "../middleware/auth";
 import ClientModel from "../models/client.model";
@@ -63,6 +63,31 @@ export const getAllProject = async (req: Request, res: Response) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+export const getCompletedProject = async (req: Request, res: Response) => {
+  const page = parseInt(req.query.page as string) || 1
+  const limit = parseInt(req.query.limit as string) || 20
+  const skip = (page - 1) * limit
+  try {
+    const newProject = await ProjectModel.find({ status: "complete" }).populate(
+      "client"
+    ).skip(skip).limit(limit)
+    const totalProject = await ProjectModel.countDocuments({
+      status: "complete",
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Get All Project Successfully",
+      project: newProject,
+      totalProject,
+      currentPage: page,
+      totalPage: Math.ceil(totalProject / limit)
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: (error as Error).message })
+  }
+}
 
 export const submitProject = async (req: AuthRequest, res: Response) => {
   const user = req.user;
