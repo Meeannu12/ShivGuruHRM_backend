@@ -193,11 +193,14 @@ export const getTaskStatusByCeo = async (req: AuthRequest, res: Response) => {
         },
       },
     ]);
+
+    const getRunningTask = await TaskModel.countDocuments({ status: { $in: ["pending", "in-progress", "reAssign"] } })
     // console.log("response Data", taskSummary);
     res.status(200).json({
       success: true,
       message: "get All Task Report by Cro",
       tasks: taskSummary,
+      runningTask: getRunningTask
     });
   } catch (error) {
     res.status(500).json({ success: false });
