@@ -87,7 +87,13 @@ export const getTaskByStaff = async (req: AuthRequest, res: Response) => {
       .populate("assignedTo", "name role email")
       .sort({ deadline: 1 });
 
-    res.json({ success: true, tasks });
+
+    // Unread count
+    const unreadCount = await TaskModel.countDocuments({
+      readBy: { $ne: req.user.userId }, // jisme userId nahi hai
+    })
+
+    res.json({ success: true, tasks, unreadCount });
   } catch (err: any) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -102,7 +108,10 @@ export const updateTaskStatus = async (req: AuthRequest, res: Response) => {
 
     const task = await TaskModel.findOneAndUpdate(
       { _id: id, assignedTo: req.user.userId }, // only owner can update
-      { status },
+      {
+        $set: { status },
+        $addToSet: { readBy: req.user.userId }, // 👈 id add hogi, duplicate avoid
+      },
       { new: true }
     );
 
