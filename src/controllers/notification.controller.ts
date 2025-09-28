@@ -6,7 +6,7 @@ export const createNotification = async (req: AuthRequest, res: Response) => {
   try {
     const { title, message } = req.body;
 
-    console.log(title, message, req.file?.filename)
+    // console.log(title, message, req.file?.filename)
 
 
     const data: any = {

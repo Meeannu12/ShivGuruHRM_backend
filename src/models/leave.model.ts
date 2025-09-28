@@ -8,6 +8,7 @@ export interface IMLeave extends Document {
   endDate: Date;
   status: "pending" | "approved" | "rejected";
   revertReason: string
+  readBy: Schema.Types.ObjectId[]
 }
 
 const LeaveSchema = new Schema<IMLeave>(
@@ -17,6 +18,7 @@ const LeaveSchema = new Schema<IMLeave>(
     reason: { type: String },
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
+    readBy: [{ type: Schema.Types.ObjectId, ref: "Employee" }],
     status: {
       type: String,
       enum: ["pending", "approved", "rejected"],

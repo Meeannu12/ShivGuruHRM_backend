@@ -94,6 +94,7 @@ export const updateEmployeeResign = async (req: AuthRequest, res: Response) => {
         id,
         {
           $set: { status: "accept" },
+          $addToSet: { readBy: user.userId }, // 👈 id array me add karega (agar already nahi hai)
         },
         { new: true }
       );
@@ -102,6 +103,7 @@ export const updateEmployeeResign = async (req: AuthRequest, res: Response) => {
         id,
         {
           $set: { status: "reject" },
+          $addToSet: { readBy: user.userId }, // 👈 id array me add karega (agar already nahi hai)
         },
         { new: true }
       );
@@ -130,7 +132,14 @@ export const getPendingNoticeRequest = async (
     const reasignEmployee = await ResignationModel.find({
       status: "pending",
     }).populate("userId");
-    res.status(200).json({ success: true, resign: reasignEmployee });
+
+
+    // Unread count
+    const unreadCount = await ResignationModel.countDocuments({
+      readBy: { $ne: req.user.userId }, // jisme userId nahi hai
+    })
+
+    res.status(200).json({ success: true, resign: reasignEmployee, unreadCount });
   } catch (error: any) {
     res.status(500).json({ success: false, message: error.message });
   }

@@ -4,8 +4,9 @@ interface IResign {
   userId: Schema.Types.ObjectId;
   employeeName: string;
   reason: string;
-//   sendTo: Schema.Types.ObjectId;
+  //   sendTo: Schema.Types.ObjectId;
   status: "pending" | "accept" | "reject";
+  readBy: Schema.Types.ObjectId[]
 }
 
 const resignSchema = new Schema<IResign>(
@@ -20,6 +21,7 @@ const resignSchema = new Schema<IResign>(
       type: String,
       required: true,
     },
+    readBy: [{ type: Schema.Types.ObjectId, ref: "Employee" }],
     // sendTo: {
     //   type: Schema.Types.ObjectId,
     //   ref: "Employee",

@@ -18,6 +18,7 @@ export const applyLeave = async (req: AuthRequest, res: Response) => {
       reason,
       startDate,
       endDate,
+      readBy: [req.user.userId], // 👈 yaha add kar diya
     });
 
     res.status(201).json({ success: true, message: "request Send successful" });
@@ -47,10 +48,17 @@ export const getAllLeavesByApprover = async (req: AuthRequest, res: Response) =>
   try {
     const newLeave = await LeaveModel.find({ status: "pending" }).populate("employee")
 
+
+    // Unread count
+    const unreadCount = await LeaveModel.countDocuments({
+      readBy: { $ne: req.user.userId }, // jisme userId nahi hai
+    })
+
     res.status(200).json({
       success: true,
       message: "get Leave with Pending status",
       Leave: newLeave,
+      unreadCount
     });
 
   } catch (error) {
@@ -68,6 +76,10 @@ export const approveLeave = async (req: AuthRequest, res: Response) => {
 
     leave.status = "approved";
     leave.revertReason = revertReason
+    // agar pehle se exist na karta ho tabhi push karna
+    if (!leave.readBy.includes(req.user.userId)) {
+      leave.readBy.push(req.user.userId);
+    }
     await leave.save();
 
     // Attendance update
@@ -95,6 +107,9 @@ export const rejectLeave = async (req: AuthRequest, res: Response) => {
 
     leave.revertReason = revertReason
     leave.status = "rejected";
+    if (!leave.readBy.includes(req.user.userId)) {
+      leave.readBy.push(req.user.userId);
+    }
     await leave.save();
 
     res.json({ success: true, message: "Leave Rejected " });

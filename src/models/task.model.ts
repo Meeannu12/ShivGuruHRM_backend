@@ -10,6 +10,7 @@ interface ITask extends Document {
   deadline?: Date;
   reassign?: Date;
   completedAt?: Date;
+  readBy: Schema.Types.ObjectId[]
 }
 
 const TaskSchema = new Schema<ITask>(
@@ -35,6 +36,7 @@ const TaskSchema = new Schema<ITask>(
     deadline: { type: Date },
     reassign: { type: Date },
     completedAt: { type: Date },
+    readBy: [{ type: Schema.Types.ObjectId, ref: "Employee" }]
   },
   { timestamps: true }
 );
