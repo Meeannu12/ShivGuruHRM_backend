@@ -22,28 +22,28 @@ export interface IEmployee extends Document {
     endDate: Date;
   };
   department:
-    | "digital-department"
-    | "sales-and-marketing-department"
-    | "hr-department"
-    | "company"
-    | "technical-department"
-    | "information-and-security-department";
+  | "digital-department"
+  | "sales-and-marketing-department"
+  | "hr-department"
+  | "company"
+  | "technical-department"
+  | "information-and-security-department";
   password: string;
   joinDate: Date;
   salary?: string;
   employeeType:
-    | "ceo"
-    | "cfo"
-    | "cso"
-    | "ciso"
-    | "managing-director"
-    | "general-manager"
-    | "hr"
-    | "manager"
-    | "training"
-    | "employee"
-    | "intern"
-    | "freelancer";
+  | "ceo"
+  | "cfo"
+  | "cso"
+  | "ciso"
+  | "managing-director"
+  | "general-manager"
+  | "hr"
+  | "manager"
+  | "training"
+  | "employee"
+  | "intern"
+  | "freelancer";
   address: string;
 
   // File uploads (URLs / paths)

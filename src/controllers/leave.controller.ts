@@ -5,6 +5,7 @@ import AttendanceModel from "../models/attendance.model";
 import EmployeeModel from "../models/employee.model";
 import HolidayModel from "../models/holiday.model";
 import NotificationModel from "../models/notification.model";
+import mongoose from "mongoose";
 
 // apply leave request from employee to any
 export const applyLeave = async (req: AuthRequest, res: Response) => {
@@ -61,8 +62,8 @@ export const getAllLeavesByApprover = async (req: AuthRequest, res: Response) =>
 export const approveLeave = async (req: AuthRequest, res: Response) => {
   try {
     const { revertReason } = req.body
-    console.log("revert message", rejectLeave)
-    const leave = await LeaveModel.findById(req.params.id);
+    // console.log("revert message", rejectLeave)
+    const leave = await LeaveModel.findById(req.params.id)
     if (!leave) return res.status(404).json({ message: "Leave not found" });
 
     leave.status = "approved";
@@ -134,3 +135,78 @@ export const createHoliday = async (req: AuthRequest, res: Response) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+
+export const getAllLeaveStatus = async (req: AuthRequest, res: Response) => {
+  const userId = req.params.id
+  const year = parseInt(req.query.year as string) || new Date().getFullYear(); // default to current year
+  try {
+    // Example: Get leave summary for a user
+    const leaves = await LeaveModel.aggregate([
+      {
+        $match: {
+          employee: new mongoose.Types.ObjectId(userId), status: "approved", startDate: { $gte: new Date(`${year}-01-01`) },
+          endDate: { $lte: new Date(`${year}-12-31`) }
+        }
+      },
+      {
+        $group: {
+          _id: "$type",
+          totalLeaves: { $sum: 1 }, // ya duration nikalna ho to $sum: { $dateDiff ... }
+        },
+      },
+    ]);
+
+    res.status(200).json({ success: true, leaves })
+  } catch (error) {
+    res.status(500).json({ success: false, message: (error as Error).message })
+  }
+}
+
+// export const getAllLeaveStatus = async (req: AuthRequest, res: Response) => {
+//   try {
+//     const userId = req.params.id;
+//     const year = parseInt(req.query.year as string) || new Date().getFullYear();
+
+//     const leaves = await LeaveModel.aggregate([
+//       // 1️⃣ Filter by user and year
+//       {
+//         $match: {
+//           employee: new mongoose.Types.ObjectId(userId),
+//           status: "approved",
+//           startDate: { $gte: new Date(`${year}-01-01`) },
+//           endDate: { $lte: new Date(`${year}-12-31`) },
+//         },
+//       },
+//       // 2️⃣ Project month from startDate
+//       {
+//         $project: {
+//           month: { $month: "$startDate" }, // 1=Jan, 12=Dec
+//           startDate: 1,
+//           endDate: 1,
+//         },
+//       },
+//       // 3️⃣ Group by month and calculate total days
+//       {
+//         $group: {
+//           _id: "$month",
+//           totalLeaves: {
+//             $sum: {
+//               $dateDiff: {
+//                 startDate: "$startDate",
+//                 endDate: "$endDate",
+//                 unit: "day",
+//               },
+//             },
+//           },
+//         },
+//       },
+//       // 4️⃣ Sort by month
+//       { $sort: { _id: 1 } },
+//     ]);
+
+//     res.status(200).json({ success: true, leaves });
+//   } catch (error) {
+//     res.status(500).json({ success: false, message: (error as Error).message });
+//   }
+// };
