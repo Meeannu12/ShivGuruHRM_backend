@@ -23,7 +23,7 @@ export const getAttendancebyStaff = async (req: AuthRequest, res: Response) => {
     const attendance = await Attendance.find({
       userId: req.user.userId,
       createdAt: { $gte: startDate, $lte: endDate },
-    }).sort({ date: 1 });
+    }).sort({ date: 1 }).populate("userId")
 
     res.status(200).json({
       message: "Attendance fetched successfully",
