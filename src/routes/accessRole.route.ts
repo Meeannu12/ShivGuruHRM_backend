@@ -6,13 +6,13 @@ import { addAccessModule, addRoleModule, getAllAccessModel, getAllRole } from ".
 const accessRoute = Router()
 
 
-accessRoute.post("addAccessModel", addAccessModule)
-accessRoute.get("getAccessModel", getAllAccessModel)
+accessRoute.post("/addAccessModel", addAccessModule)
+accessRoute.get("/getAccessModel", getAllAccessModel)
 
 
 
-accessRoute.post("addRoleModel", addRoleModule)
-accessRoute.get("getRoleModel", getAllRole)
+accessRoute.post("/addRoleModel", addRoleModule)
+accessRoute.get("/getRoleModel", getAllRole)
 
 
 export default accessRoute
