@@ -7,6 +7,7 @@ export interface IMAccess extends Document {
 
 export interface IMRole extends Document {
     name: string
+    access: string[]
 }
 
 
@@ -25,11 +26,12 @@ const roleSchema = new Schema<IMRole>({
     name: {
         type: String,
         unique: true,
-    }
+    },
+    access: [String]
 }, { timestamps: true, versionKey: false })
 
 
-const roleModel = model<IMRole>("roleModel", roleSchema)
+const RoleModel = model<IMRole>("roleModel", roleSchema)
 
 
-export { AccessModel, roleModel }
+export { AccessModel, RoleModel }

@@ -15,6 +15,7 @@ import chatRoute from "./routes/chats.route";
 import notificationRoute from "./routes/notification.route";
 import leaveRoute from "./routes/leave.route";
 import path from "path";
+import accessRoute from "./routes/accessRole.route";
 dotenv.config();
 // import productRoutes from "./routes/product.routes";
 
@@ -46,6 +47,8 @@ app.use(
 );
 
 // Routes
+
+app.use("/api/access", accessRoute)
 app.use("/api/employee", employeeRoute);
 app.use("/api/attendance", attendanceRoute);
 app.use("/api/task", taskRoute);
@@ -54,7 +57,7 @@ app.use("/api/client", clientRoute);
 app.use("/api/project", projectRoute);
 app.use("/api/chats", chatRoute);
 app.use("/api/notification", notificationRoute);
-app.use("/api/leave",leaveRoute)
+app.use("/api/leave", leaveRoute)
 
 app.get("/api/check", (req, res) => {
   res.json({ message: "Server running and socket.io is ready" });
