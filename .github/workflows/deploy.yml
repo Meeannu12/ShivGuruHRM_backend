@@ -1,0 +1,42 @@
+name: Node.js CI/CD
+
+on:
+  push:
+    branches:
+      - main  # runs whenever you push to main branch
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      # - name: Run tests (optional)
+      #   run: npm test
+
+      - name: Build the project
+        run: npm run build
+
+      # If you use Render, Railway, or EC2 — you can add deploy steps below
+
+      - name: Deploy via SSH (for EC2 example)
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ubuntu
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd /var/www/newApp
+            git pull origin main
+            npm install
+            pm2 restart all
