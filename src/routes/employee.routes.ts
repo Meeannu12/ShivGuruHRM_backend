@@ -38,6 +38,6 @@ employeeRoute.post("/createEmployee", createStaff)
 //login api
 employeeRoute.post("/employeeLogin", employeeLogin);
 
-employeeRoute.get("/getEmployee", authMiddleware, getAllEmployee);
+employeeRoute.get("/getEmployee", getAllEmployee);
 
 export default employeeRoute;
