@@ -3,63 +3,92 @@ import Employee from "../models/employee.model";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import getNextEmployeeId from "../config/employeeId";
+import EmployeeAuthModel from "../models/employeeAuth.model";
 
-// create new staff
+
+
 export const createStaff = async (req: Request, res: Response) => {
+  const { name, phone, password, role } = req.body
   try {
-    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-    // console.log("files", files); // ✅ uploaded files info
-    // console.log("body", req.body); // ✅ other form data
-
-    // Validation check
-    if (!req.body.name || !req.body.email || !req.body.phone) {
-      return res.status(400).json({ error: "All fields are required" });
+    if (!name || !phone || !password || !role) {
+      res.status(400).json({ success: false, message: "required missing field name, phone, password, role" })
+      return
     }
 
     const employeeId = await getNextEmployeeId(); // ✅ custom ID generate
 
-    // Push into database
-    const employee = new Employee({
-      name: req.body.name,
-      fatherName: req.body.fatherName,
-      phone: req.body.phone,
-      alternatePhone: req.body.alternatePhone,
-      email: req.body.email,
-      bloodGroup: req.body.bloodGroup,
-      bankName: req.body.bankName,
-      dob: req.body.dob,
-      bankIfsc: req.body.bankIfsc,
-      accountNumber: req.body.accountNumber,
-      designation: req.body.designation,
-      department: req.body.department,
-      password: req.body.password,
-      address: req.body.address,
-      joinDate: req.body.joinDate,
-      employeeType: req.body.employeeType,
-      salary: req.body.salary,
-      employeeId,
-      // file added here
-      panCard: files?.panCard?.[0]?.filename || null,
-      aadhaarCard: files?.aadhaarCard?.[0]?.filename || null,
-      photo: files?.photo?.[0]?.filename || null,
-      tenthMarksheet: files?.tenthMarksheet?.[0]?.filename || null,
-      twelfthMarksheet: files?.twelfthMarksheet?.[0]?.filename || null,
-      degree: files?.degree?.[0]?.filename || null,
-      masterDegree: files?.masterDegree?.[0]?.filename || null,
-      experienceLetter: files?.experienceLetter?.[0]?.filename || null,
-      salarySlip: files?.salarySlip?.[0]?.filename || null,
-    });
+    const newEntry = new EmployeeAuthModel({
+      name, phone, password, employeeId, role
+    })
 
-    await employee.save();
+    await newEntry.save()
 
-    res.status(200).json({
-      message: "Staff registered successfully!",
-      // files: req.files,
-    });
-  } catch (err: any) {
-    res.status(400).json({ error: err.message });
+    res.status(201).json({ success: true, message: "Employee create successful" })
+
+  } catch (error) {
+    res.status(500).json({ success: false, message: (error as Error).message })
   }
-};
+}
+
+
+// export const 
+
+// create new staff
+// export const createStaff = async (req: Request, res: Response) => {
+//   try {
+//     const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+//     // console.log("files", files); // ✅ uploaded files info
+//     // console.log("body", req.body); // ✅ other form data
+
+//     // Validation check
+//     if (!req.body.name || !req.body.email || !req.body.phone) {
+//       return res.status(400).json({ error: "All fields are required" });
+//     }
+
+//     const employeeId = await getNextEmployeeId(); // ✅ custom ID generate
+
+//     // Push into database
+//     const employee = new Employee({
+//       name: req.body.name,
+//       fatherName: req.body.fatherName,
+//       phone: req.body.phone,
+//       alternatePhone: req.body.alternatePhone,
+//       email: req.body.email,
+//       bloodGroup: req.body.bloodGroup,
+//       bankName: req.body.bankName,
+//       dob: req.body.dob,
+//       bankIfsc: req.body.bankIfsc,
+//       accountNumber: req.body.accountNumber,
+//       designation: req.body.designation,
+//       department: req.body.department,
+//       password: req.body.password,
+//       address: req.body.address,
+//       joinDate: req.body.joinDate,
+//       employeeType: req.body.employeeType,
+//       salary: req.body.salary,
+//       employeeId,
+//       // file added here
+//       panCard: files?.panCard?.[0]?.filename || null,
+//       aadhaarCard: files?.aadhaarCard?.[0]?.filename || null,
+//       photo: files?.photo?.[0]?.filename || null,
+//       tenthMarksheet: files?.tenthMarksheet?.[0]?.filename || null,
+//       twelfthMarksheet: files?.twelfthMarksheet?.[0]?.filename || null,
+//       degree: files?.degree?.[0]?.filename || null,
+//       masterDegree: files?.masterDegree?.[0]?.filename || null,
+//       experienceLetter: files?.experienceLetter?.[0]?.filename || null,
+//       salarySlip: files?.salarySlip?.[0]?.filename || null,
+//     });
+
+//     await employee.save();
+
+//     res.status(200).json({
+//       message: "Staff registered successfully!",
+//       // files: req.files,
+//     });
+//   } catch (err: any) {
+//     res.status(400).json({ error: err.message });
+//   }
+// };
 
 // // login staff api
 export const employeeLogin = async (req: Request, res: Response) => {
@@ -107,24 +136,24 @@ export const employeeLogin = async (req: Request, res: Response) => {
 
 export const getAllEmployee = async (req: Request, res: Response) => {
   try {
-    const user = await Employee.find();
-    const totalActiveEmployee = await Employee.countDocuments({
-      status: { $in: ["active", "on-notice"] },
-    });
-    const totalFreelancer = await Employee.countDocuments({
-      status: { $in: ["active", "on-notice"] },
-      employeeType: "freelancer",
-    });
-    const totalOnnotice = await Employee.countDocuments({
-      status: "on-notice",
-    });
+    const user = await EmployeeAuthModel.find();
+    // const totalActiveEmployee = await EmployeeAuthModel.countDocuments({
+    //   status: { $in: ["active", "on-notice"] },
+    // });
+    // const totalFreelancer = await Employee.countDocuments({
+    //   status: { $in: ["active", "on-notice"] },
+    //   employeeType: "freelancer",
+    // });
+    // const totalOnnotice = await EmployeeAuthModel.countDocuments({
+    //   status: "on-notice",
+    // });
 
     res.status(200).json({
       message: "get all Employee",
       user,
-      total: totalActiveEmployee,
-      freelancer: totalFreelancer,
-      onNotice: totalOnnotice,
+      // total: totalActiveEmployee,
+      // freelancer: totalFreelancer,
+      // onNotice: totalOnnotice,
     });
   } catch (error: any) {
     res.status(500).json({ message: error.message });

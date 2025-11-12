@@ -17,23 +17,27 @@ const employeeRoute = Router();
 // StaffRoute.delete("/staffDelete/:id", authMiddleware, deleteStaff);
 
 // create new employee 
-employeeRoute.post(
-  "/createEmployee",
-  upload.fields([
-    { name: "aadhaarCard", maxCount: 1 },
-    { name: "photo", maxCount: 1 },
-    { name: "tenthMarksheet", maxCount: 1 },
-    { name: "twelfthMarksheet", maxCount: 1 },
-    { name: "degree", maxCount: 1 },
-    { name: "masterDegree", maxCount: 1 },
-    { name: "experienceLetter", maxCount: 1 },
-    { name: "salarySlip", maxCount: 1 },
-  ]),
-  createStaff
-);
+// employeeRoute.post(
+//   "/createEmployee",
+//   upload.fields([
+//     { name: "aadhaarCard", maxCount: 1 },
+//     { name: "photo", maxCount: 1 },
+//     { name: "tenthMarksheet", maxCount: 1 },
+//     { name: "twelfthMarksheet", maxCount: 1 },
+//     { name: "degree", maxCount: 1 },
+//     { name: "masterDegree", maxCount: 1 },
+//     { name: "experienceLetter", maxCount: 1 },
+//     { name: "salarySlip", maxCount: 1 },
+//   ]),
+//   createStaff
+// );
+
+
+
+employeeRoute.post("/createEmployee", createStaff)
 //login api
 employeeRoute.post("/employeeLogin", employeeLogin);
 
-employeeRoute.get("/getEmployee",authMiddleware, getAllEmployee);
+employeeRoute.get("/getEmployee", authMiddleware, getAllEmployee);
 
 export default employeeRoute;

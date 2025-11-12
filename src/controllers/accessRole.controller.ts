@@ -53,13 +53,13 @@ export const addRoleModule = async (req: AuthRequest, res: Response) => {
             return
         }
 
-        const newAccess = await RoleModel.findOne({ name })
+        const newAccess = await RoleModel.findOne({ name: name.toLowerCase() })
         if (newAccess) {
             res.status(404).json({ success: false, message: `${name} already exist in DB` })
             return
         }
 
-        await RoleModel.create({ name, access })
+        await RoleModel.create({ name: name.toLowerCase(), access })
 
         res.status(201).json({ success: true, message: "Role add Successful" })
 
