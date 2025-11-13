@@ -3,6 +3,7 @@ import {
   createStaff,
   employeeLogin,
   getAllEmployee,
+  me,
 } from "../controllers/employee.controller";
 import { authMiddleware } from "../middleware/auth";
 import { upload } from "../config/upload";
@@ -39,5 +40,8 @@ employeeRoute.post("/createEmployee", createStaff)
 employeeRoute.post("/employeeLogin", employeeLogin);
 
 employeeRoute.get("/getEmployee", getAllEmployee);
+
+// get user details 
+employeeRoute.get("/me", authMiddleware, me)
 
 export default employeeRoute;

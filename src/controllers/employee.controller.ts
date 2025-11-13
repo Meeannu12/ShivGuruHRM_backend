@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import getNextEmployeeId from "../config/employeeId";
 import EmployeeAuthModel from "../models/employeeAuth.model";
+import { AuthRequest } from "../middleware/auth";
 
 
 
@@ -160,6 +161,26 @@ export const getAllEmployee = async (req: Request, res: Response) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+export const me = async (req: AuthRequest, res: Response) => {
+  const user = req.user
+  try {
+    console.log("login user datials", user)
+
+    const UserInfo = await EmployeeAuthModel.findById(user.userId).populate("role", "name access")
+
+    if (!UserInfo) {
+      res.status(404).json({ success: false, message: "Unable to get User Details" })
+      return
+    }
+
+    res.status(200).json({ success: false, UserInfo })
+
+
+  } catch (error) {
+    res.status(500).json({ success: false, message: (error as Error).message })
+  }
+}
 
 // // update staff status is active or not
 // export const staffStatusUpdate = async (req: Request, res: Response) => {
