@@ -94,7 +94,7 @@ export const createStaff = async (req: Request, res: Response) => {
 export const employeeLogin = async (req: Request, res: Response) => {
   try {
     const { employeeId, password } = req.body;
-    const employee = await Employee.findOne({ employeeId }).select("+password");
+    const employee = await EmployeeAuthModel.findOne({ employeeId }).select("+password").populate("role");
     // console.log("login User Data", staffId, password, staff);
     if (!employee) {
       return res.status(404).json({ message: "employee id is incorrect" });
@@ -110,11 +110,12 @@ export const employeeLogin = async (req: Request, res: Response) => {
       employeeId: employee.employeeId,
       isActive: employee.isActive,
       status: employee.status,
-      endDate:
-        employee.status === "on-notice"
-          ? employee?.notice?.endDate.toISOString()
-          : "",
-      employeeType: employee.employeeType,
+      role: (employee.role as any)?.name || "N/A",
+      access: (employee.role as any)?.access || [],
+      // endDate:
+      //   employee.status === "on-notice"
+      //     ? employee?.notice?.endDate.toISOString()
+      //     : "",
     };
 
     // create jwt token and send the user
@@ -136,7 +137,7 @@ export const employeeLogin = async (req: Request, res: Response) => {
 
 export const getAllEmployee = async (req: Request, res: Response) => {
   try {
-    const user = await EmployeeAuthModel.find();
+    const user = await EmployeeAuthModel.find().populate("role");
     // const totalActiveEmployee = await EmployeeAuthModel.countDocuments({
     //   status: { $in: ["active", "on-notice"] },
     // });
