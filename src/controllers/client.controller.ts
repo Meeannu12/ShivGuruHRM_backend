@@ -43,12 +43,12 @@ export const addClient = async (req: Request, res: Response) => {
 export const getAllClient = async (req: AuthRequest, res: Response) => {
   const userRole = req.user.employeeType;
   try {
-    if (!["ceo", "cfo", "manager"].includes(userRole)) {
-      return res.status(400).json({
-        success: false,
-        message: "Access denied You are not Authorize",
-      });
-    }
+    // if (!["ceo", "cfo", "manager"].includes(userRole)) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: "Access denied You are not Authorize",
+    //   });
+    // }
 
     const AllClient = await ClientModel.find();
     res.status(200).json({ success: true, client: AllClient });
@@ -56,6 +56,22 @@ export const getAllClient = async (req: AuthRequest, res: Response) => {
     res.status(500).json({ success: false, messsage: err.message });
   }
 };
+
+
+export const deleteClient = async (req: AuthRequest, res: Response) => {
+  const id = req.params.id
+  try {
+    console.log("check id is exist: ", id)
+    await ClientModel.findByIdAndDelete(id)
+
+    res.status(200).json({ success: true, message: "client delete successful" })
+
+  } catch (error) {
+    res.status(500).json({ success: false, message: (error as Error).message })
+  }
+}
+
+
 
 // work with client history model and api's
 

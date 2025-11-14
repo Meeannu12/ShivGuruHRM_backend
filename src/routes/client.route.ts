@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   addClient,
   addClientEntry,
+  deleteClient,
   getAllClient,
   getClientEntry,
 } from "../controllers/client.controller";
@@ -10,7 +11,8 @@ import { authMiddleware } from "../middleware/auth";
 const clientRoute = Router();
 
 clientRoute.post("/addClient", authMiddleware, addClient);
-clientRoute.get("/AllClient", authMiddleware, getAllClient);
+clientRoute.get("/allClient", authMiddleware, getAllClient);
+clientRoute.delete("/deleteClient/:id", authMiddleware, deleteClient)
 
 // client history work here
 clientRoute.post("/addClientEntry", authMiddleware, addClientEntry);
