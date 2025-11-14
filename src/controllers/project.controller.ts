@@ -11,6 +11,7 @@ export const createProject = async (req: Request, res: Response) => {
       assignDate,
       deadline,
       client,
+      staff,
       language,
       amount,
     }: IProject = req.body;
@@ -32,6 +33,7 @@ export const createProject = async (req: Request, res: Response) => {
       assignDate,
       deadline,
       client,
+      staff,
       language,
       amount,
     });
@@ -45,49 +47,74 @@ export const createProject = async (req: Request, res: Response) => {
 };
 
 export const getAllProject = async (req: Request, res: Response) => {
+  const status = req.query.status
   try {
-    const newProject = await ProjectModel.find({ status: "pending" }).populate(
-      "client"
-    );
-    const pendingProject = await ProjectModel.countDocuments({
-      status: "pending",
+
+    const page = parseInt(req.query.page as string) || 1
+    const limit = parseInt(req.query.limit as string) || 20
+    const skip = (page - 1) * limit
+
+    const newStatus = status ? status : "pending"
+
+    const newProject = await ProjectModel.find({ status: newStatus }).populate(
+      "client staff"
+    ).skip(skip).limit(limit)
+    const total = await ProjectModel.countDocuments({
+      status: newStatus,
     });
 
     res.status(200).json({
       success: true,
       message: "Get All Project Successfully",
       project: newProject,
-      pendingProject,
+      total,
+      currentPage: page,
+      totalPage: Math.ceil(total / limit)
     });
   } catch (error: any) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-export const getCompletedProject = async (req: Request, res: Response) => {
-  const page = parseInt(req.query.page as string) || 1
-  const limit = parseInt(req.query.limit as string) || 20
-  const skip = (page - 1) * limit
+export const deleteProject = async (req: Request, res: Response) => {
+  const id = req.params.id
   try {
-    const newProject = await ProjectModel.find({ status: "complete" }).populate(
-      "client"
-    ).skip(skip).limit(limit)
-    const totalProject = await ProjectModel.countDocuments({
-      status: "complete",
-    });
 
-    res.status(200).json({
-      success: true,
-      message: "Get All Project Successfully",
-      project: newProject,
-      totalProject,
-      currentPage: page,
-      totalPage: Math.ceil(totalProject / limit)
-    });
+    await ProjectModel.findByIdAndDelete(id)
+
+    res.status(200).json({ success: true, message: "project delete successful" })
+
   } catch (error) {
     res.status(500).json({ success: false, message: (error as Error).message })
   }
 }
+
+
+
+// export const getCompletedProject = async (req: Request, res: Response) => {
+//   const page = parseInt(req.query.page as string) || 1
+//   const limit = parseInt(req.query.limit as string) || 20
+//   const skip = (page - 1) * limit
+//   try {
+//     const newProject = await ProjectModel.find({ status: "complete" }).populate(
+//       "client"
+//     ).skip(skip).limit(limit)
+//     const totalProject = await ProjectModel.countDocuments({
+//       status: "complete",
+//     });
+
+//     res.status(200).json({
+//       success: true,
+//       message: "Get All Project Successfully",
+//       project: newProject,
+//       totalProject,
+//       currentPage: page,
+//       totalPage: Math.ceil(totalProject / limit)
+//     });
+//   } catch (error) {
+//     res.status(500).json({ success: false, message: (error as Error).message })
+//   }
+// }
 
 export const submitProject = async (req: AuthRequest, res: Response) => {
   const user = req.user;

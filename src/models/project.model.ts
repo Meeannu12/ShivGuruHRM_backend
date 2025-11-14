@@ -7,9 +7,10 @@ export interface IProject extends Document {
   deadline: Date;
   submitDate?: Date;
   client: Schema.Types.ObjectId;
+  staff: Schema.Types.ObjectId;
   language: string;
   amount: string;
-  status: "pending" | "complete";
+  status: "pending" | "running" | "complete";
   //   completedAt?: Date;
 }
 
@@ -29,10 +30,15 @@ const ProjectSchema = new Schema<IProject>(
       ref: "Clients",
       required: true,
     },
+    staff: {
+      type: Schema.Types.ObjectId,
+      ref: "EmployeeAuth",
+      required: true
+    },
     language: { type: String, required: true },
     status: {
       type: String,
-      enum: ["pending", "complete"],
+      enum: ["pending", "running", "complete"],
       default: "pending",
     },
     amount: {

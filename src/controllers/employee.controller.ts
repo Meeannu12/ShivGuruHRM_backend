@@ -162,6 +162,7 @@ export const getAllEmployee = async (req: Request, res: Response) => {
   }
 };
 
+// get user own details 
 export const me = async (req: AuthRequest, res: Response) => {
   const user = req.user
   try {
@@ -174,7 +175,7 @@ export const me = async (req: AuthRequest, res: Response) => {
       return
     }
 
-    res.status(200).json({ success: false, UserInfo })
+    res.status(200).json({ success: true, UserInfo })
 
 
   } catch (error) {
