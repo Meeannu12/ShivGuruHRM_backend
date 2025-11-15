@@ -16,6 +16,7 @@ import notificationRoute from "./routes/notification.route";
 import leaveRoute from "./routes/leave.route";
 import path from "path";
 import accessRoute from "./routes/accessRole.route";
+import passwordRoute from "./routes/passwordManager.route";
 dotenv.config();
 // import productRoutes from "./routes/product.routes";
 
@@ -51,6 +52,7 @@ app.use(
 app.use("/api/access", accessRoute)
 app.use("/api/employee", employeeRoute);
 app.use("/api/attendance", attendanceRoute);
+app.use("/api/password", passwordRoute)
 app.use("/api/task", taskRoute);
 app.use("/api/serveNotice", serveNotice);
 app.use("/api/client", clientRoute);
