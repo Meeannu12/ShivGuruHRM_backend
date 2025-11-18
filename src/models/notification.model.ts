@@ -15,9 +15,9 @@ const NotificationSchema = new Schema<IMNoticfication>(
     image: String,
     createdBy: {
       type: Schema.Types.ObjectId,
-      ref: "Employee",
+      ref: "EmployeeAuth",
     },
-    readBy: [{ type: Schema.Types.ObjectId, ref: "Employee" }],
+    readBy: [{ type: Schema.Types.ObjectId, ref: "EmployeeAuth" }],
   },
   { timestamps: true }
 );
