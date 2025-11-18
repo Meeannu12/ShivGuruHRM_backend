@@ -2,6 +2,7 @@ import { Router } from "express";
 import { authMiddleware } from "../middleware/auth";
 import {
   createNotification,
+  deleteNotification,
   getAllNotification,
   MarkReadNotification,
 } from "../controllers/notification.controller";
@@ -26,5 +27,7 @@ notificationRoute.put(
   authMiddleware,
   MarkReadNotification
 );
+
+notificationRoute.delete("/deleteNotification/:id", authMiddleware, deleteNotification)
 
 export default notificationRoute;
