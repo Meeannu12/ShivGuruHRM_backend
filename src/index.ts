@@ -35,7 +35,7 @@ app.use(express.json()); // parse JSON body
 
 
 // Folder jahan images store ho rahi hain
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/api/uploads", express.static(path.join(__dirname, "uploads")));
 
 connectDB();
 app.use(
