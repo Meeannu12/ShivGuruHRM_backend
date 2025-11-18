@@ -60,7 +60,7 @@ export const deleteNotification = async (req: AuthRequest, res: Response) => {
   const id = req.params.id
   try {
     await NotificationModel.findByIdAndDelete(id)
-    res.status(200).json({ success: false, message: "Announcement deleted successful" })
+    res.status(200).json({ success: true, message: "Announcement deleted successful" })
   } catch (error) {
     res.status(500).json({ success: false, message: (error as Error).message })
   }
