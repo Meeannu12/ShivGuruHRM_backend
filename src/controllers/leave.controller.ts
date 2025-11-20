@@ -76,10 +76,11 @@ export const approveLeave = async (req: AuthRequest, res: Response) => {
 
     leave.status = "approved";
     leave.revertReason = revertReason
+    leave.readBy = [req.user.userId]
     // agar pehle se exist na karta ho tabhi push karna
-    if (!leave.readBy.includes(req.user.userId)) {
-      leave.readBy.push(req.user.userId);
-    }
+    // if (!leave.readBy.includes(req.user.userId)) {
+    //   leave.readBy.push(req.user.userId);
+    // }
     await leave.save();
 
     // Attendance update
@@ -107,9 +108,10 @@ export const rejectLeave = async (req: AuthRequest, res: Response) => {
 
     leave.revertReason = revertReason
     leave.status = "rejected";
-    if (!leave.readBy.includes(req.user.userId)) {
-      leave.readBy.push(req.user.userId);
-    }
+    leave.readBy = [req.user.userId]
+    // if (!leave.readBy.includes(req.user.userId)) {
+    //   leave.readBy.push(req.user.userId);
+    // }
     await leave.save();
 
     res.json({ success: true, message: "Leave Rejected " });
@@ -117,6 +119,9 @@ export const rejectLeave = async (req: AuthRequest, res: Response) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+
+
 
 export const createHoliday = async (req: AuthRequest, res: Response) => {
   try {
@@ -160,7 +165,9 @@ export const getAllLeaveStatus = async (req: AuthRequest, res: Response) => {
     const leaves = await LeaveModel.aggregate([
       {
         $match: {
-          employee: new mongoose.Types.ObjectId(userId), status: "approved", startDate: { $gte: new Date(`${year}-01-01`) },
+          employee: new mongoose.Types.ObjectId(userId),
+          status: "approved",
+          startDate: { $gte: new Date(`${year}-01-01`) },
           endDate: { $lte: new Date(`${year}-12-31`) }
         }
       },
