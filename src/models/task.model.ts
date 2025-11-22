@@ -19,10 +19,10 @@ const TaskSchema = new Schema<ITask>(
     description: { type: String },
     assignedTo: {
       type: Schema.Types.ObjectId,
-      ref: "Employee",
+      ref: "EmployeeAuth",
       required: true,
     },
-    createdBy: { type: Schema.Types.ObjectId, ref: "Employee", required: true },
+    createdBy: { type: Schema.Types.ObjectId, ref: "EmployeeAuth", required: true },
     priority: {
       type: String,
       enum: ["low", "medium", "high"],

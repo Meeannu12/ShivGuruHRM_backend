@@ -25,7 +25,7 @@ export const createTask = async (req: AuthRequest, res: Response) => {
 // GET /tasks/assigned-by-me
 export const getAssignedTasks = async (req: AuthRequest, res: Response) => {
   try {
-    const userRole = req.user.employeeType;
+    const userRole = req.user.role;
 
     if (!["ceo", "cfo", "manager"].includes(userRole)) {
       return res.status(400).json({
