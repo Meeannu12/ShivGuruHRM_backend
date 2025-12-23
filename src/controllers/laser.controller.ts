@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import LaserModel from "../models/laser.model";
+import LaserModel, { IMLaser } from "../models/laser.model";
 
 
 
@@ -23,15 +23,72 @@ export const addNewLaser = async (req: Request, res: Response) => {
 
 export const getLasers = async (req: Request, res: Response) => {
     try {
-        const existLaser = await LaserModel.find()
+        const today = new Date();
+
+        // toDate → today if not provided
+        const toDate = req.query.toDate
+            ? new Date(req.query.toDate as string)
+            : today;
+
+        // fromDate → 1 month back if not provided
+        const fromDate = req.query.fromDate
+            ? new Date(req.query.fromDate as string)
+            : new Date(new Date(toDate).setMonth(toDate.getMonth() - 1));
+
+        const existLaser = await LaserModel.find({
+            date: {
+                $gte: fromDate,
+                $lte: toDate
+            }
+        }).populate({
+            path: "employee",
+            select: "name"
+        });
 
         if (existLaser.length === 0) {
-            res.status(200).json({ success: true, message: "laser not fount", existLaser })
+            res.status(200).json({
+                success: true,
+                message: "laser not found",
+                existLaser: [],
+                amount: 0
+            });
             return
         }
+        const totals = existLaser.reduce(
+            (acc: { totalCredit: number, totalDebit: number }, item: IMLaser) => {
+                acc.totalCredit += item.credit || 0;
+                acc.totalDebit += item.debit || 0;
+                return acc;
+            },
+            { totalCredit: 0, totalDebit: 0 }
+        );
 
-        res.status(200).json({ success: true, message: "get all laser", existLaser })
+        const amount = totals.totalCredit - totals.totalDebit;
+        res.status(200).json({ success: true, message: "get all laser", existLaser, amount })
 
+    } catch (error) {
+        res.status(500).json({ success: false, message: (error as Error).message })
+    }
+}
+
+
+export const deleteLaser = async (req: Request, res: Response) => {
+    const id = req.params.id
+    try {
+        const deletedLaser = await LaserModel.findByIdAndDelete(id);
+
+        // ✅ Not found check
+        if (!deletedLaser) {
+            return res.status(404).json({
+                success: false,
+                message: "Laser not found"
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Laser deleted successfully"
+        });
     } catch (error) {
         res.status(500).json({ success: false, message: (error as Error).message })
     }

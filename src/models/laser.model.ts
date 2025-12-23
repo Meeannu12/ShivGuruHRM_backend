@@ -3,8 +3,8 @@ import { Document, model, Schema, Types } from "mongoose";
 export interface IMLaser extends Document {
     title: string
     date: Date
-    credit: Number
-    debit: Number
+    credit: number
+    debit: number
     employee: Types.ObjectId
     employee_type: "c_employee" | "pt_employee"
 }
