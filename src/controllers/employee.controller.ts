@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import getNextEmployeeId from "../config/employeeId";
 import EmployeeAuthModel from "../models/employeeAuth.model";
 import { AuthRequest } from "../middleware/auth";
+import EmployeeProfileModel from "../models/employee.profile.model";
 
 
 
@@ -108,6 +109,7 @@ export const employeeLogin = async (req: Request, res: Response) => {
     const payload = {
       userId: employee._id,
       name: employee.name,
+      number: employee.phone,
       employeeId: employee.employeeId,
       isActive: employee.isActive,
       status: employee.status,
@@ -211,3 +213,68 @@ export const me = async (req: AuthRequest, res: Response) => {
 //     res.status(500).json({ message: error.message });
 //   }
 // };
+
+
+export const addemployeeProfile = async (req: AuthRequest, res: Response) => {
+  const { pannel, employeeType, email, dob, altnumber, blood, bankName, backIFSC, accNumber, salary, designation, department, address, giveIdCard, joiningLetter } = req.body
+  const user = req.user
+  try {
+    console.log("login user datials", user)
+    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+
+    if (!files) {
+      res.status(400).json({ success: false, message: "required file data" })
+    }
+
+    const accEmployeeType = ["freelancer", "full_time", "part_time", "intern"]
+    if (!employeeType || accEmployeeType.includes(employeeType)) {
+      res.status(400).json({ success: false, message: "freelancer,full_time , part_time, intern any one is required" })
+      return
+    }
+
+
+    // check all required fields 
+    if (!pannel || !email || !dob || !altnumber || !blood || !bankName || !backIFSC || !accNumber || !salary || !designation || !department || !address || !giveIdCard || !joiningLetter) {
+      res.status(400).json({
+        success: false, message: "pannel, email, dob, altnumber, blood, bankName, backIFSC, accNumber, salary, designation, department, address, giveIdCard, joiningLetter must be required"
+      })
+      return
+    }
+
+    await EmployeeProfileModel.create({
+      userId: user.userId,
+      pannel,
+      employeeType,
+      name: user.name,
+      email,
+      dob,
+      number: user.number || null,
+      altnumber,
+      blood,
+      bankName,
+      backIFSC,
+      accNumber,
+      salary,
+      designation,
+      department,
+      address,
+      photo: files?.photo?.[0]?.filename || null,
+      aadhar: files?.aadhar?.[0]?.filename || null,
+      pan: files?.pan?.[0]?.filename || null,
+      marksheet10: files?.marksheet10?.[0]?.filename || null,
+      marksheet12: files?.panCard?.[0]?.filename || null,
+      masters: files?.marksheet12?.[0]?.filename || null,
+      resume: files?.resume?.[0]?.filename || null,
+      expLetter: files?.expLetter?.[0]?.filename || null,
+      salarySlip: files?.salarySlip?.[0]?.filename || null,
+      giveIdCard,
+      joiningLetter,
+    })
+
+
+    res.status(201).json({ success: true, message: "employee profile is completed" })
+
+  } catch (error) {
+    res.status(500).json({ success: false, message: (error as Error).message })
+  }
+}
