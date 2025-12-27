@@ -4,6 +4,7 @@ import {
   createStaff,
   employeeLogin,
   getAllEmployee,
+  getEmployeeProfile,
   me,
 } from "../controllers/employee.controller";
 import { authMiddleware } from "../middleware/auth";
@@ -56,5 +57,7 @@ employeeRoute.post("/addEmployeeProfile", authMiddleware, upload.fields([
   { name: "expLetter", maxCount: 1 },
   { name: "salarySlip", maxCount: 1 },
 ]), addemployeeProfile)
+
+employeeRoute.get("/getProfile", authMiddleware, getEmployeeProfile)
 
 export default employeeRoute;

@@ -278,3 +278,20 @@ export const addemployeeProfile = async (req: AuthRequest, res: Response) => {
     res.status(500).json({ success: false, message: (error as Error).message })
   }
 }
+
+export const getEmployeeProfile = async (req: AuthRequest, res: Response) => {
+  const user = req.user
+  try {
+    const existProfile = await EmployeeProfileModel.find({ userId: user.userId })
+
+    if (!existProfile) {
+      res.status(404).json({ success: false, message: "your profile data not exist in DB" })
+      return
+    }
+
+    res.status(200).json({ success: true, user: existProfile })
+
+  } catch (error) {
+    res.status(500).json({ success: false, message: (error as Error).message })
+  }
+}
