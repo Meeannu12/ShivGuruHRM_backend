@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express";
+import { Request, Response } from "express";
 import Employee from "../models/employee.model";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -217,13 +217,17 @@ export const me = async (req: AuthRequest, res: Response) => {
 
 export const addemployeeProfile = async (req: AuthRequest, res: Response) => {
   const { pannel, employeeType, email, dob, altnumber, blood, bankName, backIFSC, accNumber, salary, designation, department, address, giveIdCard, joiningLetter } = req.body
-  const user = req.user
+  // const user = req.user
+  const id = req.params.id
   try {
-    console.log("login user datials", user)
+    // console.log("login user datials", user)
+
+    const user = await EmployeeAuthModel.findById(id)
     const files = req.files as { [fieldname: string]: Express.Multer.File[] };
 
     if (!files) {
       res.status(400).json({ success: false, message: "required file data" })
+      return
     }
 
     const accEmployeeType = ["freelancer", "full_time", "part_time", "intern"]
@@ -280,9 +284,9 @@ export const addemployeeProfile = async (req: AuthRequest, res: Response) => {
 }
 
 export const getEmployeeProfile = async (req: AuthRequest, res: Response) => {
-  const user = req.user
+  const id = req.params.id
   try {
-    const existProfile = await EmployeeProfileModel.find({ userId: user.userId })
+    const existProfile = await EmployeeProfileModel.findById(id)
 
     if (!existProfile) {
       res.status(404).json({ success: false, message: "your profile data not exist in DB" })

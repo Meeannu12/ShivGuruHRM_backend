@@ -46,7 +46,7 @@ employeeRoute.get("/getEmployee", getAllEmployee);
 // get user details 
 employeeRoute.get("/me", authMiddleware, me)
 
-employeeRoute.post("/addEmployeeProfile", authMiddleware, upload.fields([
+employeeRoute.post("/addEmployeeProfile/:id", authMiddleware, upload.fields([
   { name: "photo", maxCount: 1 },
   { name: "aadhar", maxCount: 1 },
   { name: "pan", maxCount: 1 },
@@ -58,6 +58,6 @@ employeeRoute.post("/addEmployeeProfile", authMiddleware, upload.fields([
   { name: "salarySlip", maxCount: 1 },
 ]), addemployeeProfile)
 
-employeeRoute.get("/getProfile", authMiddleware, getEmployeeProfile)
+employeeRoute.get("/getProfile/:id", authMiddleware, getEmployeeProfile)
 
 export default employeeRoute;
