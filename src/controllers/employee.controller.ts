@@ -227,7 +227,7 @@ export const addemployeeProfile = async (req: AuthRequest, res: Response) => {
     }
 
     const accEmployeeType = ["freelancer", "full_time", "part_time", "intern"]
-    if (!employeeType || accEmployeeType.includes(employeeType)) {
+    if (!employeeType || !accEmployeeType.includes(employeeType)) {
       res.status(400).json({ success: false, message: "freelancer,full_time , part_time, intern any one is required" })
       return
     }
