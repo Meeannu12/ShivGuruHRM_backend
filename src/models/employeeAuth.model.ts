@@ -11,6 +11,30 @@ interface IEmployeeAuth extends Document {
     status: "active" | "on-notice" | "exit";
     role: Schema.Types.ObjectId
     password: string
+    employeeType: "freelancer" | "full_time" | "part_time" | "intern",
+    email: string,
+    dob: Date,
+    altnumber: string
+    blood: string
+    bankName: string
+    backIFSC: string
+    accNumber: string
+    salary: string
+    designation: string
+    department: string
+    address: string
+    giveIdCard: boolean
+    joiningLetter: boolean
+    // image url enter here
+    photo: string
+    aadhar: string
+    pan: string
+    marksheet10: string
+    marksheet12: string
+    masters: string
+    resume: string
+    expLetter: string
+    salarySlip: string
     comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -36,6 +60,43 @@ const EmployeeAuthAchema = new Schema<IEmployeeAuth>({
         type: Schema.Types.ObjectId, ref: "roleModel", required: true
     },
     password: { type: String, required: true, minlength: 6, select: false },
+    employeeType: {
+        type: String,
+        enum: ["freelancer", "full_time", "part_time", "intern"],
+        required: true,
+    },
+    email: String,
+    dob: String,
+    altnumber: String,
+    blood: String,
+    bankName: String,
+    backIFSC: String,
+    accNumber: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    salary: String,
+    designation: String,
+    department: String,
+    address: String,
+    giveIdCard: {
+        type: Boolean,
+        default: false
+    },
+    joiningLetter: {
+        type: Boolean,
+        default: false
+    },
+    photo: String,
+    aadhar: String,
+    pan: String,
+    marksheet10: String,
+    marksheet12: String,
+    masters: String,
+    resume: String,
+    expLetter: String,
+    salarySlip: String,
 }, { timestamps: true, versionKey: false })
 
 
@@ -54,6 +115,8 @@ EmployeeAuthAchema.methods.comparePassword = async function (
 ): Promise<boolean> {
     return bcrypt.compare(candidatePassword, this.password);
 };
+
+EmployeeAuthAchema.index({ employeeId: 1 })
 
 
 export default model<IEmployeeAuth>("EmployeeAuth", EmployeeAuthAchema)

@@ -10,9 +10,24 @@ import EmployeeProfileModel from "../models/employee.profile.model";
 
 
 export const createStaff = async (req: Request, res: Response) => {
-  const { name, phone, password, role } = req.body
+  const { name, phone, password, role, employeeType, email, dob, altnumber, blood, bankName, backIFSC, accNumber, salary, designation, department, address, giveIdCard, joiningLetter } = req.body
   try {
-    if (!name || !phone || !password || !role) {
+
+    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+
+    if (!files) {
+      res.status(400).json({ success: false, message: "required file data" })
+      return
+    }
+
+    const accEmployeeType = ["freelancer", "full_time", "part_time", "intern"]
+    if (!employeeType || !accEmployeeType.includes(employeeType)) {
+      res.status(400).json({ success: false, message: "freelancer,full_time , part_time, intern any one is required" })
+      return
+    }
+
+
+    if (!name || !phone || !password || !role || !email || !dob || !altnumber || !blood || !bankName || !backIFSC || !accNumber || !salary || !designation || !department || !address || !giveIdCard || !joiningLetter) {
       res.status(400).json({ success: false, message: "required missing field name, phone, password, role" })
       return
     }
@@ -20,7 +35,30 @@ export const createStaff = async (req: Request, res: Response) => {
     const employeeId = await getNextEmployeeId(); // ✅ custom ID generate
 
     const newEntry = new EmployeeAuthModel({
-      name, phone, password, employeeId, role
+      name, phone, password, employeeId, role,
+      employeeType,
+      email,
+      dob,
+      altnumber,
+      blood,
+      bankName,
+      backIFSC,
+      accNumber,
+      salary,
+      designation,
+      department,
+      address,
+      photo: files?.photo?.[0]?.filename || null,
+      aadhar: files?.aadhar?.[0]?.filename || null,
+      pan: files?.pan?.[0]?.filename || null,
+      marksheet10: files?.marksheet10?.[0]?.filename || null,
+      marksheet12: files?.marksheet12?.[0]?.filename || null,
+      masters: files?.masters?.[0]?.filename || null,
+      resume: files?.resume?.[0]?.filename || null,
+      expLetter: files?.expLetter?.[0]?.filename || null,
+      salarySlip: files?.salarySlip?.[0]?.filename || null,
+      giveIdCard,
+      joiningLetter,
     })
 
     await newEntry.save()
@@ -215,73 +253,73 @@ export const me = async (req: AuthRequest, res: Response) => {
 // };
 
 
-export const addemployeeProfile = async (req: AuthRequest, res: Response) => {
-  const { pannel, employeeType, email, dob, altnumber, blood, bankName, backIFSC, accNumber, salary, designation, department, address, giveIdCard, joiningLetter } = req.body
-  // const user = req.user
-  const id = req.params.id
-  try {
-    // console.log("login user datials", user)
+// export const addemployeeProfile = async (req: AuthRequest, res: Response) => {
+//   const { pannel, employeeType, email, dob, altnumber, blood, bankName, backIFSC, accNumber, salary, designation, department, address, giveIdCard, joiningLetter } = req.body
+//   // const user = req.user
+//   const id = req.params.id
+//   try {
+//     // console.log("login user datials", user)
 
-    const user = await EmployeeAuthModel.findById(id)
-    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+//     const user = await EmployeeAuthModel.findById(id)
+//     const files = req.files as { [fieldname: string]: Express.Multer.File[] };
 
-    if (!files) {
-      res.status(400).json({ success: false, message: "required file data" })
-      return
-    }
+//     if (!files) {
+//       res.status(400).json({ success: false, message: "required file data" })
+//       return
+//     }
 
-    const accEmployeeType = ["freelancer", "full_time", "part_time", "intern"]
-    if (!employeeType || !accEmployeeType.includes(employeeType)) {
-      res.status(400).json({ success: false, message: "freelancer,full_time , part_time, intern any one is required" })
-      return
-    }
-
-
-    // check all required fields 
-    if (!pannel || !email || !dob || !altnumber || !blood || !bankName || !backIFSC || !accNumber || !salary || !designation || !department || !address || !giveIdCard || !joiningLetter) {
-      res.status(400).json({
-        success: false, message: "pannel, email, dob, altnumber, blood, bankName, backIFSC, accNumber, salary, designation, department, address, giveIdCard, joiningLetter must be required"
-      })
-      return
-    }
-
-    await EmployeeProfileModel.create({
-      userId: user.userId,
-      pannel,
-      employeeType,
-      name: user.name,
-      email,
-      dob,
-      number: user.number || null,
-      altnumber,
-      blood,
-      bankName,
-      backIFSC,
-      accNumber,
-      salary,
-      designation,
-      department,
-      address,
-      photo: files?.photo?.[0]?.filename || null,
-      aadhar: files?.aadhar?.[0]?.filename || null,
-      pan: files?.pan?.[0]?.filename || null,
-      marksheet10: files?.marksheet10?.[0]?.filename || null,
-      marksheet12: files?.marksheet12?.[0]?.filename || null,
-      masters: files?.masters?.[0]?.filename || null,
-      resume: files?.resume?.[0]?.filename || null,
-      expLetter: files?.expLetter?.[0]?.filename || null,
-      salarySlip: files?.salarySlip?.[0]?.filename || null,
-      giveIdCard,
-      joiningLetter,
-    })
+//     const accEmployeeType = ["freelancer", "full_time", "part_time", "intern"]
+//     if (!employeeType || !accEmployeeType.includes(employeeType)) {
+//       res.status(400).json({ success: false, message: "freelancer,full_time , part_time, intern any one is required" })
+//       return
+//     }
 
 
-    res.status(201).json({ success: true, message: "employee profile is completed" })
+//     // check all required fields 
+//     if (!pannel || !email || !dob || !altnumber || !blood || !bankName || !backIFSC || !accNumber || !salary || !designation || !department || !address || !giveIdCard || !joiningLetter) {
+//       res.status(400).json({
+//         success: false, message: "pannel, email, dob, altnumber, blood, bankName, backIFSC, accNumber, salary, designation, department, address, giveIdCard, joiningLetter must be required"
+//       })
+//       return
+//     }
 
-  } catch (error) {
-    res.status(500).json({ success: false, message: (error as Error).message })
-  }
-}
+//     await EmployeeProfileModel.create({
+//       userId: user.userId,
+//       name: user.name,
+//       number: user.number || null,
+//       pannel,
+//       employeeType,
+//       email,
+//       dob,
+//       altnumber,
+//       blood,
+//       bankName,
+//       backIFSC,
+//       accNumber,
+//       salary,
+//       designation,
+//       department,
+//       address,
+//       photo: files?.photo?.[0]?.filename || null,
+//       aadhar: files?.aadhar?.[0]?.filename || null,
+//       pan: files?.pan?.[0]?.filename || null,
+//       marksheet10: files?.marksheet10?.[0]?.filename || null,
+//       marksheet12: files?.marksheet12?.[0]?.filename || null,
+//       masters: files?.masters?.[0]?.filename || null,
+//       resume: files?.resume?.[0]?.filename || null,
+//       expLetter: files?.expLetter?.[0]?.filename || null,
+//       salarySlip: files?.salarySlip?.[0]?.filename || null,
+//       giveIdCard,
+//       joiningLetter,
+//     })
+
+
+//     res.status(201).json({ success: true, message: "employee profile is completed" })
+
+//   } catch (error) {
+//     res.status(500).json({ success: false, message: (error as Error).message })
+//   }
+// }
 
 export const getEmployeeProfile = async (req: AuthRequest, res: Response) => {
   const id = req.params.id

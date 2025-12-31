@@ -1,6 +1,6 @@
 import { Router } from "express";
 import {
-  addemployeeProfile,
+  // addemployeeProfile,
   createStaff,
   employeeLogin,
   getAllEmployee,
@@ -37,16 +37,7 @@ const employeeRoute = Router();
 
 
 
-employeeRoute.post("/createEmployee", createStaff)
-//login api
-employeeRoute.post("/employeeLogin", employeeLogin);
-
-employeeRoute.get("/getEmployee", getAllEmployee);
-
-// get user details 
-employeeRoute.get("/me", authMiddleware, me)
-
-employeeRoute.post("/addEmployeeProfile/:id", authMiddleware, upload.fields([
+employeeRoute.post("/createEmployee", authMiddleware, upload.fields([
   { name: "photo", maxCount: 1 },
   { name: "aadhar", maxCount: 1 },
   { name: "pan", maxCount: 1 },
@@ -56,7 +47,26 @@ employeeRoute.post("/addEmployeeProfile/:id", authMiddleware, upload.fields([
   { name: "resume", maxCount: 1 },
   { name: "expLetter", maxCount: 1 },
   { name: "salarySlip", maxCount: 1 },
-]), addemployeeProfile)
+]), createStaff)
+//login api
+employeeRoute.post("/employeeLogin", employeeLogin);
+
+employeeRoute.get("/getEmployee", getAllEmployee);
+
+// get user details 
+employeeRoute.get("/me", authMiddleware, me)
+
+// employeeRoute.post("/addEmployeeProfile/:id", authMiddleware, upload.fields([
+//   { name: "photo", maxCount: 1 },
+//   { name: "aadhar", maxCount: 1 },
+//   { name: "pan", maxCount: 1 },
+//   { name: "marksheet10", maxCount: 1 },
+//   { name: "marksheet12", maxCount: 1 },
+//   { name: "masters", maxCount: 1 },
+//   { name: "resume", maxCount: 1 },
+//   { name: "expLetter", maxCount: 1 },
+//   { name: "salarySlip", maxCount: 1 },
+// ]), addemployeeProfile)
 
 employeeRoute.get("/getProfile/:id", authMiddleware, getEmployeeProfile)
 
