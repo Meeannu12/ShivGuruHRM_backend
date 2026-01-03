@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { addAccessModule, addRoleModule, getAllAccessModel, getAllRole } from "../controllers/accessRole.controller";
+import { addAccessModule, addRoleModule, deleteRoleById, getAllAccessModel, getAllRole } from "../controllers/accessRole.controller";
 
 
 
@@ -13,6 +13,7 @@ accessRoute.get("/getAccessModel", getAllAccessModel)
 
 accessRoute.post("/addRoleModel", addRoleModule)
 accessRoute.get("/getRoleModel", getAllRole)
+accessRoute.delete("/deleteRole/:id", deleteRoleById)
 
 
 export default accessRoute

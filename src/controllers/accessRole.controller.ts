@@ -80,3 +80,18 @@ export const getAllRole = async (req: AuthRequest, res: Response) => {
         res.status(500).json({ success: false, message: (error as Error).message })
     }
 }
+
+
+export const deleteRoleById = async (req: AuthRequest, res: Response) => {
+    const id = req.params.id
+    try {
+        const existRole = await RoleModel.findByIdAndDelete(id)
+        if (!existRole) {
+            res.status(404).json({ success: false, message: "This role not found" })
+            return
+        }
+        res.status(200).json({ success: true, message: "role delete successful" })
+    } catch (error) {
+        res.status(500).json({ success: false, message: (error as Error).message })
+    }
+}
