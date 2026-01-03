@@ -54,6 +54,7 @@ export const deleteTaskById = async (req: AuthRequest, res: Response) => {
       res.status(404).json({ success: false, message: "Task not found" })
       return
     }
+    res.status(200).json({ success: false, message: "task delete successful" })
   } catch (error) {
     res.status(500).json({ success: false, message: (error as Error).message })
   }
