@@ -337,3 +337,25 @@ export const getEmployeeProfile = async (req: AuthRequest, res: Response) => {
     res.status(500).json({ success: false, message: (error as Error).message })
   }
 }
+
+export const deleteEmployeeById = async (req: AuthRequest, res: Response) => {
+  const id = req.params.id
+  try {
+    const employee = await EmployeeAuthModel.findByIdAndDelete(id)
+
+    if (!employee) {
+      return res.status(404).json({
+        success: false,
+        message: "Employee not found"
+      })
+    }
+
+    // 3️⃣ Success
+    res.status(200).json({
+      success: true,
+      message: "Employee deleted successfully"
+    })
+  } catch (error) {
+    res.status(500).json({ success: false, message: (error as Error).message })
+  }
+}

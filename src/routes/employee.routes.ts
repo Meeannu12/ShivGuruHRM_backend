@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   // addemployeeProfile,
   createStaff,
+  deleteEmployeeById,
   employeeLogin,
   getAllEmployee,
   getEmployeeProfile,
@@ -69,5 +70,6 @@ employeeRoute.get("/me", authMiddleware, me)
 // ]), addemployeeProfile)
 
 employeeRoute.get("/getProfile/:id", authMiddleware, getEmployeeProfile)
+employeeRoute.delete("/deletEmployee/:id", authMiddleware, deleteEmployeeById)
 
 export default employeeRoute;

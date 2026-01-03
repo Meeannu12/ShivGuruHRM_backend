@@ -1,6 +1,5 @@
 // // import Counter from "../models/counter.js";
 
-import EmployeeModel from "../models/employee.model";
 import EmployeeAuthModel from "../models/employeeAuth.model";
 
 // import EmployeeIdModel from "../models/employeeId.model";
