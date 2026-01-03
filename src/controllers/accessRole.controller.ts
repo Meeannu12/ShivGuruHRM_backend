@@ -81,10 +81,38 @@ export const getAllRole = async (req: AuthRequest, res: Response) => {
     }
 }
 
+export const updateRoleById = async (req: AuthRequest, res: Response) => {
+    const id = req.params.id
+    const access = req.body.access
+    try {
+
+        /* 🔒 Validate access */
+        if (!Array.isArray(access)) {
+            res.status(400).json({ success: false, message: "Access must be an array" });
+            return
+        }
+
+        const existRole = await RoleModel.findByIdAndUpdate(id, { $set: { access } }, { new: true })
+        if (!existRole) {
+            res.status(404).json({ success: false, message: "this access module not exist " })
+            return
+        }
+
+        res.status(200).json({ success: true, message: "Access module updated successfully" })
+
+
+
+    } catch (error) {
+        res.status(500).json({ success: false, message: (error as Error).message })
+    }
+}
+
 
 export const deleteRoleById = async (req: AuthRequest, res: Response) => {
     const id = req.params.id
     try {
+
+
         const existRole = await RoleModel.findByIdAndDelete(id)
         if (!existRole) {
             res.status(404).json({ success: false, message: "This role not found" })

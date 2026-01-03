@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { addAccessModule, addRoleModule, deleteRoleById, getAllAccessModel, getAllRole } from "../controllers/accessRole.controller";
+import { addAccessModule, addRoleModule, deleteRoleById, getAllAccessModel, getAllRole, updateRoleById } from "../controllers/accessRole.controller";
+import { authMiddleware } from "../middleware/auth";
 
 
 
@@ -11,9 +12,10 @@ accessRoute.get("/getAccessModel", getAllAccessModel)
 
 
 
-accessRoute.post("/addRoleModel", addRoleModule)
-accessRoute.get("/getRoleModel", getAllRole)
-accessRoute.delete("/deleteRole/:id", deleteRoleById)
+accessRoute.post("/addRoleModel", authMiddleware, addRoleModule)
+accessRoute.get("/getRoleModel", authMiddleware, getAllRole)
+accessRoute.delete("/deleteRole/:id", authMiddleware, deleteRoleById)
+accessRoute.put("/updateRole/:id", authMiddleware, updateRoleById)
 
 
 export default accessRoute
