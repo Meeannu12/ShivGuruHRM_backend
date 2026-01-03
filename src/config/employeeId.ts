@@ -1,6 +1,7 @@
 // // import Counter from "../models/counter.js";
 
 import EmployeeModel from "../models/employee.model";
+import EmployeeAuthModel from "../models/employeeAuth.model";
 
 // import EmployeeIdModel from "../models/employeeId.model";
 
@@ -20,7 +21,7 @@ import EmployeeModel from "../models/employee.model";
 
 
 async function generateEmployeeId() {
-  const lastEmployee = await EmployeeModel.findOne().sort({ createdAt: -1 });
+  const lastEmployee = await EmployeeAuthModel.findOne().sort({ createdAt: -1 });
 
   if (!lastEmployee || !lastEmployee.employeeId) {
     return "shivemp001";

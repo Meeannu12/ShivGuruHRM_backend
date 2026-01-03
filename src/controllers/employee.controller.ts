@@ -206,7 +206,7 @@ export const getAllEmployee = async (req: Request, res: Response) => {
 export const me = async (req: AuthRequest, res: Response) => {
   const user = req.user
   try {
-    console.log("login user datials", user)
+    // console.log("login user datials", user)
 
     const UserInfo = await EmployeeAuthModel.findById(user.userId).populate("role", "name access")
 
