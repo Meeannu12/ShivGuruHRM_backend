@@ -344,10 +344,11 @@ export const deleteEmployeeById = async (req: AuthRequest, res: Response) => {
     const employee = await EmployeeAuthModel.findByIdAndDelete(id)
 
     if (!employee) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         message: "Employee not found"
       })
+      return
     }
 
     // 3️⃣ Success

@@ -45,6 +45,20 @@ export const getAssignedTasks = async (req: AuthRequest, res: Response) => {
   }
 };
 
+export const deleteTaskById = async (req: AuthRequest, res: Response) => {
+  const id = req.params.id
+  try {
+    const existTask = await TaskModel.findByIdAndDelete(id)
+
+    if (!existTask) {
+      res.status(404).json({ success: false, message: "Task not found" })
+      return
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, message: (error as Error).message })
+  }
+}
+
 export const getCompletedTaskByEmployee = async (
   req: AuthRequest,
   res: Response

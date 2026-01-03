@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   createTask,
+  deleteTaskById,
   getAssignedTasks,
   getCompletedTaskByEmployee,
   getTaskByStaff,
@@ -16,6 +17,8 @@ taskRoute.post("/createTask", authMiddleware, createTask);
 taskRoute.get("/getAssignedTasks", authMiddleware, getAssignedTasks);
 
 taskRoute.get("/getTasksByStaff", authMiddleware, getTaskByStaff);
+
+taskRoute.delete("/deleteTask/:id", authMiddleware, deleteTaskById)
 
 taskRoute.get(
   "/getCompletedTaskByEmployee",
