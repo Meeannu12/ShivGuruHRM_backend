@@ -102,7 +102,7 @@ export const getNameByMonth = async (req: Request, res: Response) => {
             },
             {
                 $lookup: {
-                    from: "EmployeeAuth", // collection name
+                    from: "employeeauths", // collection name
                     localField: "_id",
                     foreignField: "_id",
                     as: "employee",
