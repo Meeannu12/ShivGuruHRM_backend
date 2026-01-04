@@ -71,6 +71,100 @@ export const getLasers = async (req: Request, res: Response) => {
     }
 }
 
+export const getNameByMonth = async (req: Request, res: Response) => {
+    const today = new Date();
+
+    // toDate → today if not provided
+    const toDate = req.query.toDate
+        ? new Date(req.query.toDate as string)
+        : today;
+
+    // fromDate → 1 month back if not provided
+    const fromDate = req.query.fromDate
+        ? new Date(req.query.fromDate as string)
+        : new Date(new Date(toDate).setMonth(toDate.getMonth() - 1));
+    try {
+
+        const result = await LaserModel.aggregate([
+            {
+                $match: {
+                    date: {
+                        $gte: fromDate,
+                        $lte: toDate,
+                    },
+                },
+            },
+            {
+                $group: {
+                    _id: "$employee", // unique employee
+                    employee_type: { $first: "$employee_type" },
+                },
+            },
+            {
+                $lookup: {
+                    from: "EmployeeAuth", // collection name
+                    localField: "_id",
+                    foreignField: "_id",
+                    as: "employee",
+                },
+            },
+            {
+                $unwind: "$employee",
+            },
+            {
+                $project: {
+                    _id: 0,
+                    employee: 1,
+                    employee_type: 1,
+                },
+            },
+        ])
+
+        res.status(200).json({
+            success: true,
+            count: result.length,
+            data: result,
+        })
+
+    } catch (error) {
+        res.status(500).json({ success: false, message: (error as Error).message })
+    }
+}
+
+export const getAllEntryByName = async (req: Request, res: Response) => {
+    const id = req.params.id
+    const today = new Date();
+
+    // toDate → today if not provided
+    const toDate = req.query.toDate
+        ? new Date(req.query.toDate as string)
+        : today;
+
+    // fromDate → 1 month back if not provided
+    const fromDate = req.query.fromDate
+        ? new Date(req.query.fromDate as string)
+        : new Date(new Date(toDate).setMonth(toDate.getMonth() - 1));
+    try {
+
+        const existLaser = await LaserModel.find({
+            employee: id,
+            date: {
+                $gte: fromDate,
+                $lte: toDate
+            }
+        }).populate({
+            path: "employee",
+            select: "name"
+        });
+
+        res.status(200).json({ success: true, laser: existLaser })
+
+
+    } catch (error) {
+        res.status(500).json({ success: false, message: (error as Error).message })
+    }
+}
+
 
 export const deleteLaser = async (req: Request, res: Response) => {
     const id = req.params.id
