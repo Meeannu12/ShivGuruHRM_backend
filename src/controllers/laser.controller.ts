@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import LaserModel, { IMLaser } from "../models/laser.model";
+import EmployeeAuthModel from "../models/employeeAuth.model";
 
 
 
@@ -11,9 +12,27 @@ export const addNewLaser = async (req: Request, res: Response) => {
             return
         }
 
-        await LaserModel.create(req.body)
 
-        res.status(201).json({ success: false, message: "new Laser create successful" })
+        if (!["c_employee", "pt_employee"].includes(employee_type)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid employee type",
+            });
+        }
+
+        const employeeExists = await EmployeeAuthModel.exists({ _id: employee });
+
+        if (!employeeExists) {
+            return res.status(404).json({
+                success: false,
+                message: "Employee not found",
+            });
+        }
+
+
+        const newLaser = await LaserModel.create({ title, date, credit, debit, employee, employee_type })
+
+        res.status(201).json({ success: false, message: "new Laser create successful", newLaser })
 
     } catch (error) {
         res.status(500).json({ success: false, message: (error as Error).message })
