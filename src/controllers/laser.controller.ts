@@ -32,7 +32,7 @@ export const addNewLaser = async (req: Request, res: Response) => {
 
         const newLaser = await LaserModel.create({ title, date, credit, debit, employee, employee_type })
 
-        res.status(201).json({ success: false, message: "new Laser create successful", newLaser })
+        res.status(201).json({ success: true, message: "new Laser create successful", newLaser })
 
     } catch (error) {
         res.status(500).json({ success: false, message: (error as Error).message })
