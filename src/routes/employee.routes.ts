@@ -38,7 +38,7 @@ const employeeRoute = Router();
 
 
 
-employeeRoute.post("/createEmployee", upload.fields([
+employeeRoute.post("/createEmployee", authMiddleware, upload.fields([
   { name: "photo", maxCount: 1 },
   { name: "aadhar", maxCount: 1 },
   { name: "pan", maxCount: 1 },
