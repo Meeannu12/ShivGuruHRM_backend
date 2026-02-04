@@ -35,7 +35,11 @@ export const createStaff = async (req: Request, res: Response) => {
     const employeeId = await getNextEmployeeId(); // ✅ custom ID generate
 
     const newEntry = new EmployeeAuthModel({
-      name, phone, password, employeeId, role,
+      name,
+      phone,
+      password,
+      employeeId,
+      role,
       employeeType,
       email,
       dob,

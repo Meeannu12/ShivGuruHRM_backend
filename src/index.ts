@@ -19,6 +19,7 @@ import accessRoute from "./routes/accessRole.route";
 import passwordRoute from "./routes/passwordManager.route";
 import meetRouter from "./routes/meeting.route";
 import laserRouter from "./routes/laser.route";
+import trustRoute from "./routes/trustBill.route";
 dotenv.config();
 // import productRoutes from "./routes/product.routes";
 
@@ -51,6 +52,7 @@ app.use(
 
 // Routes
 
+app.use("/api/bill", trustRoute)
 app.use("/api/access", accessRoute)
 app.use("/api/employee", employeeRoute);
 app.use("/api/attendance", attendanceRoute);
